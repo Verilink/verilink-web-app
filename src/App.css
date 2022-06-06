@@ -1,0 +1,8 @@
+* { padding: 0; margin: 0; }
+
+html, body, #fullHeight {
+ 
+  margin: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
