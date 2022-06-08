@@ -1,60 +1,37 @@
 import logo from './logo.svg';
 import './App.css';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-//  "@mui/core/styles";
+import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import Root from './components/root';
 import Header from './components/header';
 
-const rootTheme = createTheme({
-  typography: {
-    fontFamily: ["Jost"].join(","),
-    fontSize: 14
-  },
+import theme from "./styles/theme";
 
-  palette: {
-    primary: {
-      main: "#24363C"
-    },
-    secondary: {
-      main: "#AD968D"
-    },
-    highlight: {
-      main: "#AD968D"
-    }
-  },
+/* pages */
+import TagScanPage from './pages/tagScanPage';
+import Footer from './components/footer';
 
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 960,
-      lg: 1280,
-      xl: 1920,
-    }
-  },
-
-  background: {
-    colors: {
-      primary: {
-        main: "#E5E5E5",
-      },
-      secondary: {
-        main: "#F8F8F8"
-      }
-
-    }
-  },
-});
+const PageElement = ({name}) => {
+  return (<div style={{ height: 50 }}>{name}</div>);
+}
 
 
 function App() {
   return (
-    <ThemeProvider theme={rootTheme}>
+    <ThemeProvider theme={theme}>
       <Root id='app-root'>
-        <Header/>
-        <div style={{ height: 50 }}></div>
+        <BrowserRouter>
+          <Header/>
+            <Routes>
+              <Route path="/" element={<TagScanPage/>}/>
+              <Route path="/tag-scan" element={<PageElement name="scan-tag"/>}/>
+              <Route path="/tag-nft" element={<PageElement name="nft"/>}/>
+              <Route path="/tag-poip" element={<PageElement name="poip"/>}/>
+              <Route path="/poip" element={<PageElement name="poip"/>}/>
+            </Routes>
+          <Footer/>
+        </BrowserRouter>
       </Root>
     </ThemeProvider>
   );
