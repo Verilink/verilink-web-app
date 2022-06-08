@@ -21,7 +21,7 @@ const Header = (props) => {
   const theme = useTheme();
 
   const toolBarTheme = {
-    backgroundColor: theme.background.colors.secondary.main
+    backgroundColor: theme.palette.background.secondary
   };
 
 

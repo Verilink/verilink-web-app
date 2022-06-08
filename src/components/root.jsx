@@ -13,7 +13,7 @@ const Root = (props) => {
   const theme = useTheme();
 
   const themeStyle = {
-    backgroundColor: theme.background.colors.primary.main,
+    backgroundColor: theme.palette.background.secondary
   }
 
   return (

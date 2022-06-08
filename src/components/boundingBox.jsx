@@ -2,7 +2,7 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 
-const BoundingBox = ({children}) => {
+const BoundingBox = ({children, style}) => {
 
   const theme = useTheme();
 
@@ -13,6 +13,7 @@ const BoundingBox = ({children}) => {
     <Box sx={{
       backgroundColor,
       borderRadius: 5,
+      ...style
     }}>
       {children}
     </Box>

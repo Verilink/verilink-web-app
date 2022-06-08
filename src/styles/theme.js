@@ -15,6 +15,10 @@ const theme = createTheme({
     },
     highlight: {
       main: "#AD968D"
+    },
+    background: {
+      main: "#E5E5E5",
+      secondary: "#F8F8F8"
     }
   },
 
@@ -25,18 +29,6 @@ const theme = createTheme({
       md: 960,
       lg: 1280,
       xl: 1920,
-    }
-  },
-
-  background: {
-    colors: {
-      primary: {
-        main: "#E5E5E5",
-      },
-      secondary: {
-        main: "#F8F8F8"
-      }
-
     }
   },
 });
