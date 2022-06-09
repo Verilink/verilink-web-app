@@ -29,14 +29,14 @@ const TagScanPage = (props) => {
           <Typography variant="h5" align="center" color="background.main"
             gutterBottom>Scan a Verilink Tag</Typography>
           <Typography color="background.main" gutterBottom>
-            Scan a Verilink Tag by pressing the scan button below and holding your mobile device to the tag. 
+            Press the scan button below and hold your mobile device to the tag. 
           </Typography>
           <Typography variant="caption" color="background.main">
             Hint: For Apple devices, trying tilting the top of the phone towards the tag.
           </Typography>
         </Box>
         <Box sx={{
-          marginTop: 5,
+          marginTop: 3,
           display: "flex",
           justifyContent: "center"
         }}>
