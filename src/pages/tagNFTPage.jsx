@@ -9,6 +9,11 @@ import FlipCard from '../components/nft/flipCard';
 const contractAddress = "0x4524488c6ea3f8f41ed5bdd75b3a4b143f85eae9";
 const tokenId = 4;
 
+const safeIndexing = (array, index) => {
+  if(!array) return null;
+  return array[index];
+}
+
 const TagNFTPage = (props) => {
   
   var { isLoading, error, metadata } = useMetadata(contractAddress, tokenId);
@@ -18,12 +23,11 @@ const TagNFTPage = (props) => {
   const title = metadata.title || "none";
   const creator = metadata.creator || "none";
   const description = metadata.description || "none";
-  console.log(metadata.physicalMedia)
-  console.log(metadata.digitalMedia)
+
   return (
     <FlipCard 
-      front={metadata.digitalMedia} 
-      back={metadata.physicalMedia}
+      front={ safeIndexing(metadata.digitalMedia, 0) } 
+      back={ safeIndexing(metadata.physicalMedia, 0) }
       width={300}
       height={300}
     />

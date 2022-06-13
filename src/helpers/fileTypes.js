@@ -1,4 +1,8 @@
-import { isIPFS } from "./ipfs";
+import { isIPFS, supportIpfsUrl } from "./ipfs";
+
+const isString = (_str) => {
+  return typeof _str == "string" || _str instanceof String;
+}
 
 const SUPPORTED_VIDEO_EXTENSIONS = [
   ".mp4",
@@ -8,8 +12,8 @@ const SUPPORTED_VIDEO_EXTENSIONS = [
   "video", // used for IPFS
 ];
 
-export const isVideoType = (uri) => {
-  if(!uri) return false;
+export const isNonIPFSVideoType = (uri) => {
+  if(!uri || !isString(uri)) return false;
 
   const longestExt = SUPPORTED_VIDEO_EXTENSIONS.reduce(
     (prev, cur) => prev.length >= cur.length ? prev : cur, ".")
@@ -32,8 +36,8 @@ const SUPPORTED_IMAGE_EXTENSIONS = [
   "image" // used for IPFS
 ];
 
-export const isImageType = (uri) => {
-  if(!uri) return false;
+export const isNonIPFSImageType = (uri) => {
+  if(!uri || !isString(uri)) return false;
 
   const longestExt = SUPPORTED_IMAGE_EXTENSIONS.reduce(
     (prev, cur) => prev.length >= cur.length ? prev : cur, ".");
@@ -74,4 +78,25 @@ export const isIPFSVideoType = (uri) => {
   }
 
   return false;
+}
+
+export const isImageType = (uri) => {
+  return isIPFSImageType(uri) || isNonIPFSImageType(uri);
+}
+
+export const isVideoType = (uri) => {
+  return isIPFSVideoType(uri) || isNonIPFSVideoType(uri);
+}
+
+export const getResolvedURI = (uri) => {
+
+  if(isIPFSFileFormat(uri))
+  {
+    return supportIpfsUrl(uri.src);
+  }
+  else
+  {
+    return uri;
+  }
+  
 }

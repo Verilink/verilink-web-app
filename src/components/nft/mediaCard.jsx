@@ -1,8 +1,10 @@
 import React from 'react';
 import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import ReactPlayer from 'react-player';
 
-import { isImageType, isVideoType } from '../../helpers/fileTypes';
+import { supportIpfsUrl } from '../../helpers/ipfs';
+import { getResolvedURI, isImageType, isVideoType } from '../../helpers/fileTypes';
 
 const MediaCard = (props) => {
 
@@ -19,29 +21,43 @@ const MediaCard = (props) => {
   const mediaComponent = (uri) => {
     if(isImageType(uri))
     {
-      return (<img style={maxSize} src={uri} alt="Media Image"/>)
+      const src = getResolvedURI(uri);
+      return (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: props.backgroundColor,
+            ...size
+          }}
+        >
+          <img style={{ 
+            display: "block", ...maxSize, margin: "auto" }} 
+            src={src} alt="Media Image"/>
+        </Box>
+      )
     }
     else if(isVideoType(uri))
     {
+      const src = getResolvedURI(uri);
       return (<ReactPlayer
-        url={uri}
+        url={src}
         loop={true}
         controls={false}
         playing={true}
         muted={true}
         playsinline={true}
-        style={{ ...maxSize, backgroundColor: "black", visibility: "inherit"}}
+        style={{ ...maxSize, backgroundColor: props.backgroundColor, visibility: "inherit"}}
       />)
     }
     
     return null;
   }
 
-
   return (
-    <div style={{ width: 300, height: 300, backgroundColor: props.backgroundColor}}>
+    <>
       {mediaComponent(props.uri)}
-    </div>
+    </>
   )
 }
 

@@ -16,7 +16,7 @@ export const isIPFS = (uri) => {
 	{
 		return false;
 	}
-	else if(uri.slice(ipfsInd.length) == ipfsInd)
+	else if(uri.slice(0, ipfsInd.length) == ipfsInd)
 	{
 		return true;
 	}
