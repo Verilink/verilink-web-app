@@ -1,11 +1,12 @@
 import React from 'react';
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
+import { MAX_VIEWPORT_WIDTH } from '../../config/settings';
 
 const boxStyle = {
   width: "calc(100%)",
   margin: "0 auto",
-  maxWidth: 500
+  maxWidth: MAX_VIEWPORT_WIDTH
 };
 
 const Root = (props) => {

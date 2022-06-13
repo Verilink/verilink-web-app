@@ -24,13 +24,13 @@ function App() {
       <Root id='app-root'>
         <BrowserRouter>
           <Header/>
-            <Routes>
-              <Route path="/" element={<TagNFTPage/>}/>
-              <Route path="/tag-scan" element={<TagScanPage/>}/>
-              <Route path="/tag-nft" element={<TagNFTPage/>}/>
-              <Route path="/tag-poip" element={<PageElement name="poip"/>}/>
-              <Route path="/poip" element={<PageElement name="poip"/>}/>
-            </Routes>
+          <Routes>
+            <Route path="/" element={<TagNFTPage/>}/>
+            <Route path="/tag-scan" element={<TagScanPage/>}/>
+            <Route path="/tag-nft" element={<TagNFTPage/>}/>
+            <Route path="/tag-poip" element={<PageElement name="poip"/>}/>
+            <Route path="/poip" element={<PageElement name="poip"/>}/>
+          </Routes>
           <Footer/>
         </BrowserRouter>
       </Root>

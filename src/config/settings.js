@@ -1,0 +1,1 @@
+export const MAX_VIEWPORT_WIDTH = 500;

@@ -3,7 +3,6 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import ReactPlayer from 'react-player';
 
-import { supportIpfsUrl } from '../../helpers/ipfs';
 import { getResolvedURI, isImageType, isVideoType } from '../../helpers/fileTypes';
 
 const MediaCard = (props) => {
@@ -23,18 +22,11 @@ const MediaCard = (props) => {
     {
       const src = getResolvedURI(uri);
       return (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            backgroundColor: props.backgroundColor,
-            ...size
-          }}
-        >
+     
           <img style={{ 
             display: "block", ...maxSize, margin: "auto" }} 
             src={src} alt="Media Image"/>
-        </Box>
+      
       )
     }
     else if(isVideoType(uri))
@@ -47,7 +39,9 @@ const MediaCard = (props) => {
         playing={true}
         muted={true}
         playsinline={true}
-        style={{ ...maxSize, backgroundColor: props.backgroundColor, visibility: "inherit"}}
+        width={props.width}
+        height={props.height}
+        style={{...maxSize, visibility: "inherit"}}
       />)
     }
     
@@ -55,9 +49,15 @@ const MediaCard = (props) => {
   }
 
   return (
-    <>
+    <Box onClick={props.onClick}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        ...size
+      }}
+    >
       {mediaComponent(props.uri)}
-    </>
+    </Box>
   )
 }
 

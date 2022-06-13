@@ -4,6 +4,9 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
 import { useMetadata } from '../helpers/nftMetadata';
+import useWindowDimensions from '../helpers/windowDimensions';
+import { MAX_VIEWPORT_WIDTH } from '../config/settings';
+
 import FlipCard from '../components/nft/flipCard';
 
 const contractAddress = "0x4524488c6ea3f8f41ed5bdd75b3a4b143f85eae9";
@@ -24,24 +27,30 @@ const TagNFTPage = (props) => {
   const creator = metadata.creator || "none";
   const description = metadata.description || "none";
 
+  const windowDimensions = useWindowDimensions();
+  const mediaSize = Math.min(windowDimensions.width - 20, MAX_VIEWPORT_WIDTH - 40);
+
+  console.log(`MediaSize: ${mediaSize}`)
   return (
-    <FlipCard 
-      front={ safeIndexing(metadata.digitalMedia, 0) } 
-      back={ safeIndexing(metadata.physicalMedia, 0) }
-      width={300}
-      height={300}
-    />
+    <Box style={{ 
+      marginTop: 20, 
+      marginBottom: 20, 
+      width: "100%",
+    }}>
+      <div style={{ 
+          display: "flex", 
+          justifyContent: "center",
+          width: "100%",
+      }}>
+        <FlipCard 
+          front={ safeIndexing(metadata.digitalMedia, 0) } 
+          back={ safeIndexing(metadata.physicalMedia, 0) }
+          width={mediaSize}
+          height={mediaSize}
+        />
+      </div>
+    </Box>
   );
 }
 
 export default TagNFTPage;
-
-/*
-<div>
-    <p>ContractAddress: {_contractAddress}</p>
-    <p>TokenId: {_tokenId}</p>
-    <p>Title: {title}</p>
-    <p>Creator: {creator}</p>
-    <p>Description: {description}</p>
-</div>
-*/

@@ -4,20 +4,15 @@ import ReactCardFlip from 'react-card-flip';
 
 import MediaCard from './mediaCard';
 
-const containerStyle = {
-  width: "calc(80%)",
-  height: "calc(80%)",
-  maxWidth: 360,
-  maxHeight: 360,
-}
+const containerStyle = { /* empty this for now */ }
 
 const FlipCard = (props) => {
 
   const [isFlipped, setIsFlipped] = React.useState(false);
 
   var size = {
-    width: props.width || 360,
-    height: props.height || 360
+    width: props.width || 300,
+    height: props.height || 300
   };
 
   const flip = () => {
@@ -36,12 +31,8 @@ const FlipCard = (props) => {
           infinite
           onClick={() => {setIsFlipped(prev=>!prev)}}
         >
-          <Paper style={size} elevation={1} onClick={flip}>
-            <MediaCard {...frontProps}/>
-          </Paper>
-          <Paper style={size} elevation={1} onClick={flip}>
-            <MediaCard {...backProps}/>
-          </Paper>
+          <MediaCard {...frontProps} onClick={flip}/>
+          <MediaCard {...backProps} onClick={flip}/>
         </ReactCardFlip>
     </>
   );
