@@ -48,7 +48,6 @@ export const isImageType = (uri) => {
   return false;
 }
 
-
 const isIPFSFileFormat = (uri) => {
   return uri && uri.src && uri.type;
 }
@@ -76,6 +75,3 @@ export const isIPFSVideoType = (uri) => {
 
   return false;
 }
-
-
-is
