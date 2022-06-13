@@ -1,8 +1,11 @@
+import { isIPFS } from "./ipfs";
+
 const SUPPORTED_VIDEO_EXTENSIONS = [
   ".mp4",
   ".mov",
   ".avi",
-  ".m4v"
+  ".m4v",
+  "video", // used for IPFS
 ];
 
 export const isVideoType = (uri) => {
@@ -25,7 +28,8 @@ const SUPPORTED_IMAGE_EXTENSIONS = [
   ".jpg",
   ".gif",
   ".png",
-  ".jpeg"
+  ".jpeg",
+  "image" // used for IPFS
 ];
 
 export const isImageType = (uri) => {
@@ -43,3 +47,35 @@ export const isImageType = (uri) => {
 
   return false;
 }
+
+
+const isIPFSFileFormat = (uri) => {
+  return uri && uri.src && uri.type;
+}
+
+export const isIPFSImageType = (uri) => {
+
+  if(!isIPFSFileFormat(uri)) return false;
+
+  if(isIPFS(uri.src))
+  {
+    return SUPPORTED_IMAGE_EXTENSIONS.includes(uri.type);
+  }
+
+  return false;
+}
+
+export const isIPFSVideoType = (uri) => {
+  
+  if(!isIPFSFileFormat(uri)) return false;
+
+  if(isIPFS(uri.src)) 
+  {
+    return SUPPORTED_VIDEO_EXTENSIONS.includes(uri.type);
+  }
+
+  return false;
+}
+
+
+is
