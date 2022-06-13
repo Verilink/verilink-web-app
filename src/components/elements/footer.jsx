@@ -2,12 +2,10 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Typography from '@mui/material/Typography';
 
-import logo from "../logo.png";
+import logo from "../../logo.png";
 
-import InstagramButton from './instagramButton';
-import TwitterButton from './twitterButton';
-
-
+import InstagramButton from '../buttons/instagramButton';
+import TwitterButton from '../buttons/twitterButton';
 
 const Footer = (props) => {
 

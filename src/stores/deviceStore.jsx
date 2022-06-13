@@ -1,25 +1,40 @@
 import create from 'zustand';
 import URL from 'url-parse';
-import parseKeys from "../helpers/parseKeys";
+import {  
+  parseKeys, 
+  parsePublicKey, 
+  parseChipId,
+  bytesFromHexString 
+} from "../helpers/parseKeys";
+
+const TAG_DOMAIN = process.env.REACT_APP_TAG_DOMAIN;
 
 
 const deviceStore = create((set) => ({
-
 
   keys: null,
   publicKey: null,
   chipId: null,
 
   init: () => {
+    const { updateFromKeys } = deviceStore.getState()
     const url = URL(window.location.href, true);
     const keys = parseKeys(url.query.static);
+    
+    if(keys)
+    {
+      updateFromKeys(keys);
+    }
+  },
 
-    if(keys) {
-
-      
-
-      set({ keys });
-
+  updateFromKeys: (keys) => {
+    if(keys && keys.primaryPublicKeyRaw)
+    {
+      set({ 
+        keys, 
+        publicKey: parsePublicKey(keys.primaryPublicKeyRaw), 
+        chipId: parseChipId(keys.primaryPublicKeyRaw)
+      });
     }
   },
 
@@ -29,7 +44,7 @@ const deviceStore = create((set) => ({
         publicKey: {
           allowCredentials: [
             {
-              id: fromHexString(reqx),
+              id: bytesFromHexString(reqx),
               transports: ['nfc'],
               type: 'public-key',
             },
@@ -52,9 +67,18 @@ const deviceStore = create((set) => ({
     }
   },
 
+  linkHalo: async () => {
+    const { triggerScan, updateFromKeys } = deviceStore.getState()
+    const sig = await triggerScan('02')
 
-
-
+    if (typeof sig !== 'undefined') {
+      const keys = parseKeys(sig);
+      if(keys)
+      {
+        updateFromKeys(keys);
+      }
+    }
+  },
 }));
 
 export default deviceStore;

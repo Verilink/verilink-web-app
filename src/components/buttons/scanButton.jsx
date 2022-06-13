@@ -5,10 +5,11 @@ const scanButtonStyle = {
   width: 240
 }
 
-const ScanButton = () => {
+const ScanButton = (props) => {
   return (
     <Button color="background" variant="contained"
-      style={scanButtonStyle}>Initiate a scan</Button>
+      onClick={props.onClick} style={scanButtonStyle}
+      >Initiate a scan</Button>
   );
 };
 

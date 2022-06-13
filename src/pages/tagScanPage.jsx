@@ -3,12 +3,15 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 
-import BoundingBox from '../components/boundingBox';
-import ScanButton from '../components/scanButton';
+import BoundingBox from '../components/containers/boundingBox';
+import ScanButton from '../components/buttons/scanButton';
 import VerilinkTag from "../VTag.png";
 
+import deviceStore from '../stores/deviceStore';
 
 const TagScanPage = (props) => {
+
+  const linkHalo = deviceStore((s) => s.linkHalo);
 
   return (
     <Container style={{ 
@@ -40,7 +43,7 @@ const TagScanPage = (props) => {
           display: "flex",
           justifyContent: "center"
         }}>
-          <ScanButton/>
+          <ScanButton onClick={linkHalo}/>
         </Box>
       </BoundingBox>
     </Container>

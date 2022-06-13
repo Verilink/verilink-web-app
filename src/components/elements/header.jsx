@@ -8,8 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from "@mui/material/styles";
 
-import AppStoreButton from './appStoreButton';
-import LogoButton from './logoButton';
+import AppStoreButton from '../buttons/appStoreButton';
+import LogoButton from '../buttons/logoButton';
 
 const toolBarStyle = {
   display: "flex",

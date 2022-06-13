@@ -1,6 +1,9 @@
 import { ethers } from 'ethers'
 
 function parseKeys(payload) {
+
+  payload = ethers.utils.arrayify(payload);
+
   try {
     const primaryPublicKeyLength = parseInt('0x' + payload.slice(0, 2)) * 2
     const primaryPublicKeyRaw = payload.slice(2, primaryPublicKeyLength + 2)
@@ -56,12 +59,24 @@ function parsePublicKey (publicKey) {
   return ethers.utils.computePublicKey(publicKey);
 }
 
-function parse () {
+function parseChipId (publicKey) {
+  return ethers.utils.keccak256(
+    '0x' + parsePublicKey(publicKey).slice(4));
+}
 
+function bytesFromHexString (hexString) 
+{
+  if(hexString.slice(0, 2) != "0x")
+  {
+    hexString = "0x" + hexString;
+  }
+
+  return ethers.utils.arrayify(hexString);
 }
 
 export {
   parseKeys,
   parsePublicKey,
-  parse
+  parseChipId,
+  bytesFromHexString
 };
