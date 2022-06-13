@@ -1,10 +1,25 @@
-export const supportIpfsUrl = (url) => {
-	if(!url) return null;
+export const supportIpfsUrl = (uri) => {
+	if(!uri) return null;
 	
-	if (url.slice(0, 7) === 'ipfs://') {
-			const cid = url.slice(7);
+	if (uri.slice(0, 7) === 'ipfs://') {
+			const cid = uri.slice(7);
 			return `https://verilink.mypinata.cloud/ipfs/${cid}`;
 	} else {
-			return url;
+			return uri;
 	}
+}
+
+export const isIPFS = (uri) => {
+	const ipfsInd = "ipfs://";
+
+	if(!uri) 
+	{
+		return false;
+	}
+	else if(uri.slice(ipfsInd.length) == ipfsInd)
+	{
+		return true;
+	}
+
+	return false;
 }

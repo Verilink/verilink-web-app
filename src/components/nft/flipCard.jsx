@@ -4,16 +4,6 @@ import ReactCardFlip from 'react-card-flip';
 
 import MediaCard from './mediaCard';
 
-const paperStyle = {
-  "& > *": {
-    margin: 20,
-  },
-  height: "auto", 
-  display: "inline-block",
-  position: "relatives",
-  borderRadius: 0,
-}
-
 const containerStyle = {
   width: "calc(100%)",
   height: "calc(100%)",
@@ -34,6 +24,9 @@ const FlipCard = (props) => {
     setIsFlipped(prev => !prev);
   }
 
+  const frontProps = { ...size, uri: props.front };
+  const backProps = { ...size, uri: props.back };
+
   return (
     <>
         <ReactCardFlip 
@@ -43,12 +36,12 @@ const FlipCard = (props) => {
           infinite
           onClick={() => {setIsFlipped(prev=>!prev)}}
         >
-          <div onClick={flip}>
-            <MediaCard backgroundColor="blue"/>
-          </div>
-          <div onClick={flip}>
-            <MediaCard backgroundColor="yellow"/>
-          </div>
+          <Paper elevation={1} onClick={flip}>
+            <MediaCard {...frontProps}/>
+          </Paper>
+          <Paper elevation={1} onClick={flip}>
+            <MediaCard {...backProps}/>
+          </Paper>
         </ReactCardFlip>
     </>
   );

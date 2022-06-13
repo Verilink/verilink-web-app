@@ -18,9 +18,15 @@ const TagNFTPage = (props) => {
   const title = metadata.title || "none";
   const creator = metadata.creator || "none";
   const description = metadata.description || "none";
-
+  console.log(metadata.physicalMedia)
+  console.log(metadata.digitalMedia)
   return (
-    <FlipCard/>
+    <FlipCard 
+      front={metadata.digitalMedia} 
+      back={metadata.physicalMedia}
+      width={300}
+      height={300}
+    />
   );
 }
 
