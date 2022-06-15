@@ -6,15 +6,19 @@ import {
   parseChipId,
   bytesFromHexString 
 } from "../helpers/parseKeys";
+import { tagLookupURI } from '../config/endpoints';
+import axios from 'axios';
 
 const TAG_DOMAIN = process.env.REACT_APP_TAG_DOMAIN;
-
 
 const deviceStore = create((set) => ({
 
   keys: null,
   publicKey: null,
   chipId: null,
+  contractAddress: null,
+  tokenId: null,
+  poipEventId: null,
 
   init: () => {
     const { updateFromKeys } = deviceStore.getState()
@@ -25,6 +29,17 @@ const deviceStore = create((set) => ({
     {
       updateFromKeys(keys);
     }
+  },
+
+  reset: () => {
+    set({
+      keys: null,
+      publicKey: null,
+      chipId: null,
+      contractAddress: null,
+      tokenId: null,
+      poipEventId: null
+    });
   },
 
   updateFromKeys: (keys) => {
@@ -79,6 +94,26 @@ const deviceStore = create((set) => ({
       }
     }
   },
+
+  loadDevice: async () => {
+    const publicKey = deviceStore.getState().publicKey;
+    
+    const internalFetchUrl = tagLookupURI(publicKey);
+    try
+    {
+      const result = await axios(internalFetchUrl);
+      const data = result.data;
+      set({ 
+        contractAddress: data.contractAddress,
+        tokenId: data.tokenId,
+        poipEventId: data.poipEventId
+      });
+    }
+    catch(error)
+    {
+      console.log(`Error Loading the device details: ${error}`);
+    }
+  }
 }));
 
 export default deviceStore;

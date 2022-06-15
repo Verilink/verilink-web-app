@@ -5,12 +5,16 @@ const OPENSEA_MATIC_BASE = "https://opensea.io/assets/matic/";
 const SCANNER_MATIC_BASE = "https://polygonscan.com/tokens-nft?q=";
 
 
-export const getMetadataURI = (contractAddress, tokenID) => {
-	return `${API_ENDPOINT}/nft/contract/${contractAddress}/token/${tokenID}`
+export const getNFTMetadataURI = (contractAddress, tokenId) => {
+	return `${API_ENDPOINT}/nft/contract/${contractAddress}/token/${tokenId}`;
+}
+
+export const getPOIPMetadataURI = (contractAddress, eventId) => {
+	return `${API_ENDPOINT}/nft/contract/${contractAddress}/token/${eventId}`;
 }
 
 export const tagLookupURI = (publicKey) => {
-  return `${API_ENDPOINT}/tag/publickey/${publicKey}`
+  return `${API_ENDPOINT}/tag/publickey/${publicKey}`;
 }
 
 export const getOpenSeaMaticURI = (contractAddress, tokenID) =>

@@ -2,15 +2,16 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-
+import Paper from "@mui/material/Paper";
+import ReactMarkdown from 'react-markdown';
 import { useMetadata } from '../helpers/nftMetadata';
 import useWindowDimensions from '../helpers/windowDimensions';
 import { MAX_VIEWPORT_WIDTH } from '../config/settings';
-
 import FlipCard from '../components/nft/flipCard';
 
-const contractAddress = "0x4524488c6ea3f8f41ed5bdd75b3a4b143f85eae9";
-const tokenId = 4;
+import nftStore from '../stores/nftStore';
+
+import logo from "../logo.png";
 
 const safeIndexing = (array, index) => {
   if(!array) return null;
@@ -19,10 +20,11 @@ const safeIndexing = (array, index) => {
 
 const TagNFTPage = (props) => {
   
-  var { isLoading, error, metadata } = useMetadata(contractAddress, tokenId);
+  var { isLoading, error, metadata } = nftStore((s) => ({ isLoading: s.isLoading, error: s.error, metadata: s.metadata }));
+
   metadata = metadata || {};
-  const _contractAddress = metadata.contractAddress || "none";
-  const _tokenId = metadata.tokenId || 0;
+  const contractAddress = metadata.contractAddress || "none";
+  const tokenId = metadata.tokenId || 0;
   const title = metadata.title || "none";
   const creator = metadata.creator || "none";
   const description = metadata.description || "none";
@@ -33,7 +35,7 @@ const TagNFTPage = (props) => {
   console.log(`MediaSize: ${mediaSize}`)
   return (
     <Box style={{ 
-      marginTop: 20, 
+      marginTop: 0, 
       marginBottom: 20, 
       width: "100%",
     }}>
@@ -41,6 +43,9 @@ const TagNFTPage = (props) => {
           display: "flex", 
           justifyContent: "center",
           width: "100%",
+          backgroundColor: "gray",
+          backgroundImage: logo,
+          marginBottom: 5,
       }}>
         <FlipCard 
           front={ safeIndexing(metadata.digitalMedia, 0) } 
@@ -49,6 +54,28 @@ const TagNFTPage = (props) => {
           height={mediaSize}
         />
       </div>
+      <Container>
+        <Typography align="center" variant="h5">{title}</Typography>
+        <Typography gutterBottom align="center" variant="h6">
+          <Box sx={{ fontStyle: 'italic', }}>{creator}</Box>
+        </Typography>
+        <Typography paragraph>
+          <ReactMarkdown children={description} className="line-break" />
+        </Typography>
+        <Box
+          sx={{
+            width: "100%",
+		        borderTop: `1px solid ${"gray"}`,
+		        opacity: .5
+          }}
+        />
+        <Typography gutterBottom variant="body1">
+          Contract Address: {contractAddress}
+        </Typography>
+        <Typography gutterBottom variant="body1">
+          Token Id: {tokenId}
+        </Typography>
+      </Container>
     </Box>
   );
 }

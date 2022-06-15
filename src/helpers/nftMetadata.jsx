@@ -1,10 +1,26 @@
 import React from 'react';
-import { getMetadataURI } from "../config/endpoints";
+import { getNFTMetadataURI } from "../config/endpoints";
 import { supportIpfsUrl } from "./ipfs";
 import axios from 'axios';
 
+export const fetchNFTMetadata = async (contractAddress, tokenId) => {
+	const internalFetchUrl = getNFTMetadataURI(contractAddress, tokenId);
+	const result = await axios(internalFetchUrl);
+	const data = result.data;
+
+	if(data.metadata)
+	{ /* handle IPFS metadata */
+		const ipfsResult = await axios(supportIpfsUrl(data.metadata));
+		return processNFTMetadata({ ...data, ...ipfsResult });
+	}
+	else
+	{
+		return processNFTMetadata(data);
+	}
+}
+
 /* Change to GRAPHQL later on */
-export const useMetadata = (contractAddress, tokenId) => {
+export const useNFTMetadata = (contractAddress, tokenId) => {
 	/* 
 		To be deprecated in favor of graphql API 
 		And caching metadata details in the backend
@@ -13,7 +29,7 @@ export const useMetadata = (contractAddress, tokenId) => {
 	const [error, setError] = React.useState({isSet: false, message: ""});
 	const [metadata, setMetadata] = React.useState(null);
 
-	const internalFetchUrl = getMetadataURI(contractAddress, tokenId);
+	const internalFetchUrl = getNFTMetadataURI(contractAddress, tokenId);
 
 	React.useEffect(() => {
 
@@ -54,11 +70,11 @@ export const useMetadata = (contractAddress, tokenId) => {
     inner();
 	}, [contractAddress, tokenId]);
 
-	return { isLoading, error, metadata: processMetadata(metadata) }
+	return { isLoading, error, metadata: processNFTMetadata(metadata) }
 }
 
 
-export const processMetadata = (metadata, low_res=true) => {
+export const processNFTMetadata = (metadata, low_res=true) => {
 	if(!metadata) return null;
 
 	/* TODO: data design for extra images / videos */
