@@ -12,23 +12,28 @@ import BoundingBox from '../components/containers/boundingBox';
 import ScanButton from '../components/buttons/scanButton';
 import VerilinkTag from "../VTag.png";
 
+import useWindowDimensions from '../helpers/windowDimensions';
+
 import deviceStore from '../stores/deviceStore';
 import nftStore from '../stores/nftStore';
 import poipStore from '../stores/poipStore';
+import useAppendLog from '../helpers/useAppendLog';
 
 const TagScanPage = (props) => {
   const linkHalo = deviceStore((s) => s.linkHalo);
+  const loadDevice = deviceStore((s) => s.loadDevice);
   const [errorMsg, setErrorMsg] = React.useState({ isSet: false, message: "" });
   const navigate = useNavigate();
+
+  const windowDimensions = useWindowDimensions();
+
+  const [log, addLog, clearLog] = useAppendLog();
 
   /* reset device, nft, poip on tag scan page */
   React.useEffect(() => { 
     const { reset: resetDeviceStore } = deviceStore.getState();
     const { reset: resetNFTStore } = nftStore.getState();
     const { reset: resetPOIPStore } = poipStore.getState();
-    console.log("Device Store:", resetDeviceStore);
-    console.log("NFT Store:", resetNFTStore);
-    console.log("POIP Store:", resetPOIPStore);
     resetDeviceStore();
     resetNFTStore();
     resetPOIPStore();
@@ -37,15 +42,16 @@ const TagScanPage = (props) => {
   const onScan = async () => {
     try
     { 
-      await linkHalo();
+      await linkHalo(addLog);
     }
     catch(error)
     {
+      console.log(`Error: Scan Failed: ${error}`);
       setErrorMsg({ isSet: true, message: "Scan failed!"});
       return;
     }
+
     /* switch if successful */
-    
     const { chipId } = deviceStore.getState();
     if(!chipId)
     {
@@ -54,6 +60,7 @@ const TagScanPage = (props) => {
     }
     else
     {
+      loadDevice();
       navigate(routes.device)
     }
   }
@@ -69,7 +76,7 @@ const TagScanPage = (props) => {
       display: "flex", 
       justifyContent: "center", 
     }}>
-      <BoundingBox style={{ padding: 2, maxWidth: 320 }}>
+      <BoundingBox style={{ padding: 2, width: windowDimensions.width - 20 }}>
         <Box sx={{
           display: "flex",
           justifyContent: "center",
@@ -85,6 +92,9 @@ const TagScanPage = (props) => {
           </Typography>
           <Typography variant="caption" color="background.main">
             Hint: For Apple devices, trying tilting the top of the phone towards the tag.
+          </Typography>
+          <Typography>
+            {JSON.stringify(log)}
           </Typography>
         </Box>
         <Box sx={{

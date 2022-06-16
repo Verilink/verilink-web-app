@@ -14,6 +14,7 @@ export const getPOIPMetadataURI = (contractAddress, eventId) => {
 }
 
 export const tagLookupURI = (publicKey) => {
+	if(publicKey.slice(0, 2) == "0x") publicKey = publicKey.slice(2);
   return `${API_ENDPOINT}/tag/publickey/${publicKey}`;
 }
 

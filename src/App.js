@@ -31,7 +31,7 @@ function App() {
         <BrowserRouter>
           <Header/>
           <Routes>
-            <Route path={routes.home} element={<TagScanPage/>}/>
+            <Route path={routes.home} element={<DevicePage/>}/>
             <Route path={routes.scan} element={<TagScanPage/>}/>
             <Route path={routes.device} element={<DevicePage/>}/>
             <Route path={routes.nft} element={<TagNFTPage/>}/>
