@@ -4,9 +4,7 @@ import Typography from "@mui/material/Typography";
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 import ConditionalRender from '../hoc/ConditionalRender';
 
-/* TODO later */
-
-const TokenStatus = (props) => {
+const TokenLimit= (props) => {
   
   const infinite = props.tokenLimit >= 1000000;
 
@@ -18,14 +16,14 @@ const TokenStatus = (props) => {
         alignItems: "center"
       }}
     >
-      <Typography>
-        POIs Minted: {props.tokensMinted} out of {infinite ? " " : props.tokenLimit}
-      </Typography>
+      <ConditionalRender condition={!infinite}>
+        <Typography>{props.tokenLimit}</Typography>
+      </ConditionalRender>
       <ConditionalRender condition={infinite}>
-        <AllInclusiveIcon style={{ marginLeft: 5}}/>
+        <AllInclusiveIcon/>
       </ConditionalRender>
     </Box>
   );
 };
 
-export default TokenStatus;
+export default TokenLimit;

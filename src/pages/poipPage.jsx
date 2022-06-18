@@ -7,30 +7,42 @@ import { MAX_VIEWPORT_WIDTH } from '../config/settings';
 import { Typography } from '@mui/material';
 import ConditionalRender from "../components/hoc/ConditionalRender";
 import poipStore from '../stores/poipStore';
+import EventStatus from '../components/event/EventStatus';
+import EventTimes from '../components/event/EventTimes';
+import TokenStatus from '../components/event/TokenStatus';
+import TokenLimit from '../components/event/TokenLimit';
 
+import ReactMarkdown from 'react-markdown';
+import logo from "../logo.png";
 
-const TimeComponent = () => {
+const centerFlex = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center"
+};
 
-  /*  If event dead - grayed out and timeline */
-  /* If event live
-    if "infinite" show open ended
-    if < 24 hours left show countdown
-    else show dates
-  */
+const defaultPoipDetails = {
+  eventId: -1,
+  metadata: {
+    title: "Sample POI",
+    description: `Sorry, we couldn't find the POI you're looking for. 
+    Please view this POI to lessen the sadness you're feeling.`,
+    creator: "Isaac",
+    image: logo
+  },
+  startTime: 0,
+  finishTime: Math.floor(((new Date()).getTime()) / 1000),
+  tokensMinted: 420,
+  tokenLimit: 1000
+};
 
-  return (
-    <>
-    <ConditionalRender>
-
-    </ConditionalRender>
-    <ConditionalRender>
-
-    </ConditionalRender>
-
-    </>
-  )
+const getPoipDetails = (defaultDetails, poipDetails) => {
+  return Object.entries(poipDetails).reduce((prev, cur) => {
+    const [key, val] = cur;
+    if(val != null) prev[key] = val;
+    return prev;
+  }, defaultDetails)
 }
-
 
 const PoipPage = (props) => {
   const poipDetails = poipStore((s) => ({
@@ -39,22 +51,17 @@ const PoipPage = (props) => {
     tokenLimit: s.tokenLimit,
     tokensMinted: s.tokensMinted,
     startTime: s.startTime,
-    endTime: s.endTime,
+    finishTime: s.finishTime,
     loading: s.loading,
     error: s.error
   }));
 
-  const metadata = poipDetails.metadata || {}
-  const title = metadata.title || "none";
-  const description = metadata.description || "none";
-  const image = metadata.image || "none";
-
-  console.log(`Image: ${image}`)
-
-  console.log(`POIP Details: ${JSON.stringify(poipDetails)}`);
+  const details = getPoipDetails(defaultPoipDetails, poipDetails);
 
   const windowDimensions = useWindowDimensions();
   const mediaSize = Math.min(windowDimensions.width - 20, MAX_VIEWPORT_WIDTH - 40);
+
+  console.log(`Details: ${JSON.stringify(details)}`);
 
   React.useEffect(() => {
     const { loadPOIP } = poipStore.getState();
@@ -67,26 +74,52 @@ const PoipPage = (props) => {
       marginBottom: 20,
       width: "100%",
     }}>
+      <ConditionalRender>
+
+      </ConditionalRender>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
         width: "100%",
         backgroundColor: "gray",
         /* backgroundImage, */
-        marginBottom: 5,
+        marginBottom: 2,
       }}>
         <MediaCard 
-          uri={image} 
+          uri={details.metadata.image} 
           width={mediaSize}
           height={mediaSize}/>
       </Box>
       <Container>
-        <Typography align="center" variant="h5">{title}</Typography>
-        <Typography align="center" variant="h6">by Creator</Typography>
-
-        <Box>
-          <Typography gutterBottom variant="body1">
+        <Typography align="center" variant="h5">{details.metadata.title}</Typography>
+        <Typography 
+          align="center" variant="h6" 
+          style={{ fontStyle: "italic", }}>by {details.metadata.creator}</Typography>
+        <EventStatus 
+          startTime={details.startTime} 
+          finishTime={details.finishTime}/>
+        <TokenStatus
+          tokensMinted={details.tokensMinted}
+          tokenLimit={details.tokenLimit}/>
+        <Typography paragraph>
+          <ReactMarkdown children={details.metadata.description} className="line-break" />
+        </Typography>
+        <Box>       
+          <Box sx={centerFlex}> 
+            <Typography style={{ fontStyle: "bold" }}>
+                Event Window
+           </Typography>
+            <EventTimes 
+              startTime={details.startTime} 
+              finishTime={details.finishTime}/>
+          </Box>
+          <Typography style={{ fontStyle: "bold" }}>
+            Event POI Limit
           </Typography>
+          <Box sx={centerFlex}>
+            <TokenLimit tokenLimit={details.tokenLimit}/>
+          </Box>
+          
         </Box>
       </Container>
     </Box>

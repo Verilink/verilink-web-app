@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import moment from 'moment';
 import BlinkStatus from '../ui/BlinkStatus';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
+import VerticalDivider from '../ui/VerticalDivider';
 
 const INFINITE_YEARS = 10;
 
@@ -42,12 +43,7 @@ const LiveWindow = (props) => {
         <Typography>
           Event Live
         </Typography>
-        <Box sx={{
-          borderLeft: "1px solid black",
-          height: 14,
-          marginLeft: 1,
-          marginRight: 1
-          }}/>
+       <VerticalDivider/>
         <Typography style={{ fontStyle: "italic" }}>
           Ends {moment().to(props.finishTime)}
         </Typography>
@@ -81,7 +77,7 @@ const DeadWindow = (props) => {
 }
 
 const getEventComponent = (startTime, finishTime) => {
-  if(startTime < finishTime)
+  if(moment() < finishTime)
   {
     let duration = moment.duration(finishTime.diff(moment()));
 

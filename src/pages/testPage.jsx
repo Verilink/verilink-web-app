@@ -1,6 +1,8 @@
 import React from 'react';
 import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
+import TokenStatus from '../components/event/TokenStatus';
+import VerifyCreator from '../components/event/VerifyCreator';
 
 const TestPage = () => {
 
@@ -10,9 +12,12 @@ const TestPage = () => {
   var finishTime = new Date();
   finishTime = finishTime.setTime(finishTime.getTime() + 24*60*60*1000);
 
+  const tokenLimit = 100;
+  const tokensMinted = 69;
+
   return (
     <div>
-    <div style={{ marginTop: 40,
+    <div style={{ marginTop: 5,
       width: "100%",
       height: 200,
       display: "flex",
@@ -20,19 +25,10 @@ const TestPage = () => {
       alignItems: "center",
       borderStyle: "1px solid black"
     }}>
-      <EventStatus
-        startTime={Math.floor(startTime / 1000)} 
-        finishTime={Math.floor(finishTime / 1000)}/>
-    </div>
-    <div style={{ marginTop: 40,
-      width: "100%",
-      height: 200,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      borderStyle: "1px solid black"
-    }}>
-      <EventTimes startTime={startTime / 1000} finishTime={finishTime / 1000}/>
+      <TokenStatus
+        tokensMinted={420}
+        tokenLimit={1000000}
+      />
     </div>
     </div>
   );

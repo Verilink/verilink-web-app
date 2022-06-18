@@ -5,5 +5,6 @@ export const IPOIP_ABI = [
     "function eventTokensMinted(uint256 eventId) external view returns (uint256)",
     "function eventStart(uint256 eventId) public view returns (uint256)",
     "function eventFinish(uint256 eventId) public view returns (uint256)",
-    "function mint(uint256 eventId, bytes32 chipId, address to, bytes32 blockHash, bytes calldata signature)"
+    "function mint(uint256 eventId, bytes32 chipId, address to, bytes32 blockHash, bytes calldata signature)",
+    "function eventCreator(uint256 eventId) external view returns (address)"
 ];
