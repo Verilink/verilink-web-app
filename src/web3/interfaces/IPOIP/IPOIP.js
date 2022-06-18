@@ -9,6 +9,7 @@ export const eventTokensMinted = async (provider, id) => (await (new ethers.Cont
 export const eventStart = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventStart(id)));
 export const eventFinish = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventFinish(id)));
 export const eventCreator = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventCreator(id)));
+
 // TODO: maybe factor out txnOps code from other places that use it like IERC72IPhysicalTap2Claim claim()
 export const mint = async (signer, eventId, chipId, to, blockHash, signature, receipt = false) => {
     let contract = new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, signer)

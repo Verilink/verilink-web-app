@@ -18,7 +18,7 @@ export const tagLookupURI = (publicKey) => {
   return `${API_ENDPOINT}/tag/publickey/${publicKey}`;
 }
 
-export const getOpenSeaMaticURI = (contractAddress, tokenID) =>
+export const getOpenseaMaticURI = (contractAddress, tokenID) =>
 {
 	return `${OPENSEA_MATIC_BASE}${contractAddress}/${tokenID}`;
 }

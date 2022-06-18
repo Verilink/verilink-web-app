@@ -7,7 +7,8 @@ import {
   eventTokenLimit, 
   eventTokensMinted,
   eventStart,
-  eventFinish
+  eventFinish,
+  eventCreator
  } from '../web3/interfaces/IPOIP/IPOIP';
 
 const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
@@ -58,6 +59,8 @@ const poipStore = create((set) => ({
       const tokensMinted = (await eventTokensMinted(MATIC_PROVIDER, eventId)).toNumber();
       const startTime = (await eventStart(MATIC_PROVIDER, eventId)).toNumber();
       const finishTime = (await eventFinish(MATIC_PROVIDER, eventId)).toNumber();
+      const creator = (await eventCreator(MATIC_PROVIDER, eventId));
+
       console.log(`Start Time: ${JSON.stringify(startTime)}`);
       console.log(`Finish Time: ${JSON.stringify(finishTime)}`)
       set({
@@ -67,7 +70,8 @@ const poipStore = create((set) => ({
         tokenLimit,
         tokensMinted,
         startTime,
-        finishTime
+        finishTime,
+        creator
       });
     }
     catch(error)
