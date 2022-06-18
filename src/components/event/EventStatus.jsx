@@ -2,7 +2,7 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import moment from 'moment';
-import BlinkStatus from './BlinkStatus';
+import BlinkStatus from '../ui/BlinkStatus';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
 
 const INFINITE_YEARS = 10;

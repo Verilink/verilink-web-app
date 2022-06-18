@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import moment from 'moment';
 import AllInclusiveIcon from '@mui/icons-material/AllInclusive';
-import ConditionalRender from './hoc/ConditionalRender';
+import ConditionalRender from '../hoc/ConditionalRender';
 
 const INFINITE_YEARS = 10;
 

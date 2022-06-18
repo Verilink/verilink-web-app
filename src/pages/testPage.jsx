@@ -1,6 +1,6 @@
 import React from 'react';
-import EventStatus from '../components/EventStatus';
-import EventTimes from '../components/EventTimes';
+import EventStatus from '../components/event/EventStatus';
+import EventTimes from '../components/event/EventTimes';
 
 const TestPage = () => {
 
