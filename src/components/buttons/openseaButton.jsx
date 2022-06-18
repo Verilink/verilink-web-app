@@ -17,7 +17,7 @@ const OpenseaButton = (props) => {
 
   return (
     <Button variant="contained"
-      onClick={onClick}
+      onClick={onClick} style={{ width: 195 }}
     >
       <Box sx={{
         display: "flex",

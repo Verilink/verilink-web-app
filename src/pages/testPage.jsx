@@ -3,7 +3,8 @@ import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
 import TokenStatus from '../components/event/TokenStatus';
 import VerifyCreator from '../components/event/VerifyCreator';
-
+import OpenseaButton from '../components/buttons/openseaButton';
+import PolygonScanButton from '../components/buttons/polygonScanButton';
 const TestPage = () => {
 
   var startTime = new Date();
@@ -25,10 +26,8 @@ const TestPage = () => {
       alignItems: "center",
       borderStyle: "1px solid black"
     }}>
-      <TokenStatus
-        tokensMinted={420}
-        tokenLimit={1000000}
-      />
+      <OpenseaButton contractAddress="0x6969" tokenId={1}/>
+      <PolygonScanButton contractAddress="0x6969"/>
     </div>
     </div>
   );

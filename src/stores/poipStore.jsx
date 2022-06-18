@@ -60,9 +60,7 @@ const poipStore = create((set) => ({
       const startTime = (await eventStart(MATIC_PROVIDER, eventId)).toNumber();
       const finishTime = (await eventFinish(MATIC_PROVIDER, eventId)).toNumber();
       const creator = (await eventCreator(MATIC_PROVIDER, eventId));
-
-      console.log(`Start Time: ${JSON.stringify(startTime)}`);
-      console.log(`Finish Time: ${JSON.stringify(finishTime)}`)
+      
       set({
         loading: false,
         metadata: result,

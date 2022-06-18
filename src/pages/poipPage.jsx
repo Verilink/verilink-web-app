@@ -3,14 +3,18 @@ import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import MediaCard from '../components/nft/mediaCard';
 import useWindowDimensions from '../helpers/windowDimensions';
-import { MAX_VIEWPORT_WIDTH } from '../config/settings';
+import { MAX_VIEWPORT_WIDTH, POIP_ADDRESS } from '../config/settings';
 import { Typography } from '@mui/material';
-import ConditionalRender from "../components/hoc/ConditionalRender";
 import poipStore from '../stores/poipStore';
 import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
 import TokenStatus from '../components/event/TokenStatus';
 import TokenLimit from '../components/event/TokenLimit';
+import Grid from '@mui/material/Grid';
+import useInterval from '../hooks/useInterval';
+
+import OpenseaButton from "../components/buttons/openseaButton";
+import PolygonScanButton from "../components/buttons/polygonScanButton";
 
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
@@ -30,11 +34,14 @@ const defaultPoipDetails = {
     creator: "Isaac",
     image: logo
   },
-  startTime: 0,
-  finishTime: Math.floor(((new Date()).getTime()) / 1000),
+  startTime: Math.floor(((new Date()).getTime()) / 1000) - 2000,
+  finishTime: Math.floor(((new Date()).getTime()) / 1000) + 2000,
   tokensMinted: 420,
-  tokenLimit: 1000
+  tokenLimit: 1000,
+  creator: "0xdd98001c33c0c75d0952439699c33b1a02cf23a9"
 };
+
+const TOKENS_MINTED_POLL_INTERVAL = 2000;
 
 const getPoipDetails = (defaultDetails, poipDetails) => {
   return Object.entries(poipDetails).reduce((prev, cur) => {
@@ -45,6 +52,7 @@ const getPoipDetails = (defaultDetails, poipDetails) => {
 }
 
 const PoipPage = (props) => {
+
   const poipDetails = poipStore((s) => ({
     eventId: s.eventId,
     metadata: s.metadata,
@@ -53,8 +61,13 @@ const PoipPage = (props) => {
     startTime: s.startTime,
     finishTime: s.finishTime,
     loading: s.loading,
-    error: s.error
+    error: s.error,
+    creator: s.creator
   }));
+
+  const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
+
+  useInterval(pollTokensMinted, TOKENS_MINTED_POLL_INTERVAL);
 
   const details = getPoipDetails(defaultPoipDetails, poipDetails);
 
@@ -71,12 +84,9 @@ const PoipPage = (props) => {
   return (
     <Box sx={{
       marginTop: 0,
-      marginBottom: 20,
+      marginBottom: 0,
       width: "100%",
     }}>
-      <ConditionalRender>
-
-      </ConditionalRender>
       <Box sx={{
         display: "flex",
         justifyContent: "center",
@@ -101,25 +111,60 @@ const PoipPage = (props) => {
         <TokenStatus
           tokensMinted={details.tokensMinted}
           tokenLimit={details.tokenLimit}/>
-        <Typography paragraph>
-          <ReactMarkdown children={details.metadata.description} className="line-break" />
-        </Typography>
-        <Box>       
-          <Box sx={centerFlex}> 
-            <Typography style={{ fontStyle: "bold" }}>
-                Event Window
-           </Typography>
-            <EventTimes 
-              startTime={details.startTime} 
-              finishTime={details.finishTime}/>
-          </Box>
-          <Typography style={{ fontStyle: "bold" }}>
-            Event POI Limit
+        <Box style={{ marginTop: 5, }}>
+          <Typography paragraph>
+            <ReactMarkdown children={details.metadata.description} className="line-break" />
           </Typography>
-          <Box sx={centerFlex}>
-            <TokenLimit tokenLimit={details.tokenLimit}/>
+        </Box>
+        <Box>
+          <Box sx={{ ...centerFlex, marginTop: 2}}>
+            <PolygonScanButton contractAddress={POIP_ADDRESS} tokenId={details.eventId}/>
           </Box>
-          
+          <Box sx={{ ...centerFlex, marginTop: 2 }}>
+            <OpenseaButton contractAddress={POIP_ADDRESS} tokenId={details.eventId}/>
+          </Box>
+        </Box>
+        <Box style={{ marginTop: 15, }}>       
+          <Typography style={{ fontWeight: 750, }} gutterBottom>
+            Event Details
+          </Typography>
+          <Grid container spacing={2}>
+
+            <Grid item xs={3}>
+              <Typography  align="left" style={{ marginLeft: 10,  }}>
+                Timeline
+              </Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <Box sx={{ display: "flex", justifyContent: "left"}}> 
+                <EventTimes 
+                  startTime={details.startTime} 
+                  finishTime={details.finishTime}/>
+              </Box>
+            </Grid>
+            
+            <Grid item xs={3}>
+              <Typography  align="left" style={{ marginLeft: 10,  }}>
+                POI Limit
+              </Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <Box sx={{ display: "flex", justifyContent: "left"}}> 
+                <TokenLimit tokenLimit={details.tokenLimit}/>
+              </Box>
+            </Grid>
+
+            <Grid item xs={3}>
+              <Typography  align="left" style={{ marginLeft: 10,  }}>
+                Creator
+              </Typography>
+            </Grid>
+            <Grid item xs={9}>
+              <Box sx={{ display: "flex", justifyContent: "left"}}> 
+                <Typography align="center" style={{  }}>{details.creator}</Typography>
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Container>
     </Box>
