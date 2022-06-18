@@ -12,7 +12,9 @@ const EventTimes = (props) => {
   const startTime = moment.unix(props.startTime);
   const finishTime = moment.unix(props.finishTime);
 
-  const isInfinite = Math.abs(moment.duration(finishTime.diff(startTime)).years()) >= INFINITE_YEARS;
+  const isFutureInfinite = Math.abs(moment.duration(finishTime.diff(startTime)).years()) >= INFINITE_YEARS;
+  const isPastInfinite = Math.abs(moment.duration(moment().diff(startTime)).years()) >= INFINITE_YEARS;
+
 
   return (
     <Box
@@ -23,11 +25,18 @@ const EventTimes = (props) => {
       }}
     >
       <Typography>
-      {startTime.format("LLL")} - {isInfinite ? "" : finishTime.format("LLL")}
+        <ConditionalRender condition={isFutureInfinite && isPastInfinite}>
+          <AllInclusiveIcon/>
+        </ConditionalRender>
+        <ConditionalRender condition={isFutureInfinite && !isPastInfinite}>
+          {startTime.format("LLL")} - 
+          <AllInclusiveIcon/>
+        </ConditionalRender>
+        <ConditionalRender condition={!isFutureInfinite && isPastInfinite}>
+          <AllInclusiveIcon/>
+          {finishTime.format("LLL")}
+        </ConditionalRender>
       </Typography>
-      <ConditionalRender condition={isInfinite}>
-        <AllInclusiveIcon/>
-      </ConditionalRender>
     </Box>
   )
 }
