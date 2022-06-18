@@ -83,7 +83,7 @@ const DeadWindow = (props) => {
 const getEventComponent = (startTime, finishTime) => {
   if(startTime < finishTime)
   {
-    let duration = moment.duration(finishTime.diff(startTime));
+    let duration = moment.duration(finishTime.diff(moment()));
 
     if(Math.abs(duration.years()) >= INFINITE_YEARS)
     {
