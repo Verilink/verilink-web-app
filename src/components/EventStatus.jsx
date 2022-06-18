@@ -101,31 +101,15 @@ const getEventComponent = (startTime, finishTime) => {
 }
 
 const EventStatus = (props) => {
-
-  /* 
-    Event Dead - grayed out and timeline
-    Event Live:
-      "Infinite" - show open ended
-      If < 24 hours left show countdown
-      else show dates
-  */
-
+  /* expect unix time */
   const startTime = moment.unix(props.startTime);
   const finishTime = moment.unix(props.finishTime);
 
   return (
     <>
-     <Box sx={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      }}>
-        {getEventComponent(startTime, finishTime)}
-      </Box>
-      
+      {getEventComponent(startTime, finishTime)}
     </>
   )
-
 }
 
 export default EventStatus;
