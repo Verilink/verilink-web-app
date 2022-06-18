@@ -5,10 +5,10 @@ const isString = (_str) => {
 }
 
 const SUPPORTED_VIDEO_EXTENSIONS = [
-  ".mp4",
-  ".mov",
-  ".avi",
-  ".m4v",
+  "mp4",
+  "mov",
+  "avi",
+  "m4v",
   "video", // used for IPFS
 ];
 
@@ -16,7 +16,7 @@ export const isNonIPFSVideoType = (uri) => {
   if(!uri || !isString(uri)) return false;
 
   const longestExt = SUPPORTED_VIDEO_EXTENSIONS.reduce(
-    (prev, cur) => prev.length >= cur.length ? prev : cur, ".")
+    (prev, cur) => prev.length >= cur.length ? prev : cur, "")
 
   let uriExt = uri.slice(uri.length-longestExt.length, uri.length);
 
@@ -29,24 +29,35 @@ export const isNonIPFSVideoType = (uri) => {
 }
 
 const SUPPORTED_IMAGE_EXTENSIONS = [
-  ".jpg",
-  ".gif",
-  ".png",
-  ".jpeg",
+  "jpg",
+  "gif",
+  "png",
+  "jpeg",
   "image" // used for IPFS
 ];
 
 export const isNonIPFSImageType = (uri) => {
   if(!uri || !isString(uri)) return false;
 
-  const longestExt = SUPPORTED_IMAGE_EXTENSIONS.reduce(
-    (prev, cur) => prev.length >= cur.length ? prev : cur, ".");
-  
-  let uriExt = uri.slice(uri.length - longestExt.length, uri.length);
-
-  for(let ext of SUPPORTED_IMAGE_EXTENSIONS)
+  if(uri.slice(0, 4) == "data")
+  { /* support base64 encoding */
+    const uriType = uri.slice(uri.indexOf(":")+1, uri.indexOf(";"));
+    for(let ext of SUPPORTED_IMAGE_EXTENSIONS)
+    {
+      if(uriType.includes(ext)) return true;
+    }
+  }
+  else
   {
-    if(uriExt.includes(ext)) return true;
+    const longestExt = SUPPORTED_IMAGE_EXTENSIONS.reduce(
+      (prev, cur) => prev.length >= cur.length ? prev : cur, "");
+    
+    let uriExt = uri.slice(uri.length - longestExt.length, uri.length);
+
+    for(let ext of SUPPORTED_IMAGE_EXTENSIONS)
+    {
+      if(uriExt.includes(ext)) return true;
+    }
   }
 
   return false;
