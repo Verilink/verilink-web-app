@@ -1,13 +1,13 @@
 import { ethers } from "ethers";
-import { POIP_ADDRESS } from "../../../utils/settings";
+import { POIP_ADDRESS } from "../../../config/settings";
 import { IPOIP_ABI } from './ABI';
 
-export const uri = async (provider, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).uri(id);
-export const balanceOf = async (provider, owner, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).balanceOf(owner, id);
-export const eventTokenLimit = async (provider, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventTokenLimit(id);
-export const eventTokensMinted = async (provider, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventTokensMinted(id);
-export const eventStart = async (provider, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventStart(id);
-export const eventFinish = async (provider, id) => new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventFinish(id);
+export const uri = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).uri(id)));
+export const balanceOf = async (provider, owner, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).balanceOf(owner, id)));
+export const eventTokenLimit = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventTokenLimit(id)));
+export const eventTokensMinted = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventTokensMinted(id)));
+export const eventStart = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventStart(id)));
+export const eventFinish = async (provider, id) => (await (new ethers.Contract(POIP_ADDRESS, IPOIP_ABI, provider).eventFinish(id)));
 
 // TODO: maybe factor out txnOps code from other places that use it like IERC72IPhysicalTap2Claim claim()
 export const mint = async (signer, eventId, chipId, to, blockHash, signature, receipt = false) => {

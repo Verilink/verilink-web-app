@@ -13,6 +13,7 @@ import ScanButton from '../components/buttons/scanButton';
 import VerilinkTag from "../VTag.png";
 
 import useWindowDimensions from '../helpers/windowDimensions';
+import { MAX_VIEWPORT_WIDTH } from '../config/settings';
 
 import deviceStore from '../stores/deviceStore';
 import nftStore from '../stores/nftStore';
@@ -76,7 +77,8 @@ const TagScanPage = (props) => {
       display: "flex", 
       justifyContent: "center", 
     }}>
-      <BoundingBox style={{ padding: 2, width: windowDimensions.width - 20 }}>
+      <BoundingBox style={{ padding: 2, maxWidth: MAX_VIEWPORT_WIDTH, 
+        width: (windowDimensions.width * 3 / 4) }}>
         <Box sx={{
           display: "flex",
           justifyContent: "center",
@@ -92,9 +94,6 @@ const TagScanPage = (props) => {
           </Typography>
           <Typography variant="caption" color="background.main">
             Hint: For Apple devices, trying tilting the top of the phone towards the tag.
-          </Typography>
-          <Typography>
-            {JSON.stringify(log)}
           </Typography>
         </Box>
         <Box sx={{

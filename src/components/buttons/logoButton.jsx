@@ -15,11 +15,9 @@ const logoStyle = {
   maxHeight: 24
 };
 
-
 const LogoButton = (props) => {
-
   return (
-    <Button>
+    <Button onClick={props.onClick}>
       <Box sx={boxStyle}>
         <img style={logoStyle} src={Logo}/>
         <Typgraphy>erilink</Typgraphy>

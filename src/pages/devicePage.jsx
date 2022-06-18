@@ -18,7 +18,10 @@ import ViewNFTButton from '../components/buttons/viewNFTButton';
 import ViewPOIPButton from '../components/buttons/viewPOIPButton';
 import VerilinkTag from "../VTag.png";
 
+/* Update to add the device things */
 import deviceStore from '../stores/deviceStore';
+import poipStore from '../stores/poipStore';
+import nftStore from '../stores/nftStore';
 
 /* Icons */
 import VerifiedIcon from '@mui/icons-material/Verified';
@@ -40,6 +43,8 @@ const deviceDetailsStub = {
 
 const DevicePage = (props) => {
 
+  const navigate = useNavigate();
+
   const deviceLookup = deviceLookupStub; /*deviceStore((s) => ({ 
     loading: s.loadingDevice, 
     error: s.deviceLookupError
@@ -52,6 +57,36 @@ const DevicePage = (props) => {
     poipEventId: s.poipEventId,
     verified: s.verified
   })); */
+
+  const onlyNFT = () => {
+    return (deviceDetails.contractAddress != null && deviceDetails.tokenId != null) &&
+      (deviceDetails.poipEventId == null);
+  }
+
+  const onlyPOIP = () => {
+    return (deviceDetails.contractAddress == null && deviceDetails.tokenId == null) &&
+      (deviceDetails.poipEventId == true);
+  }
+
+  const goToPOIP = (replace=false) => {
+    navigate(routes.poip, replace);
+  }
+
+  const goToNFT = (replace=false) => {
+    navigate(routes.nft, replace);
+  }
+
+  React.useEffect(() => {
+
+    if(onlyNFT())
+    {
+      goToNFT(true);
+    }
+    else if(onlyPOIP())
+    {
+      goToPOIP(true);
+    }
+  }, [deviceDetails]);
 
   const windowDimensions = useWindowDimensions();
 
@@ -117,19 +152,18 @@ const DevicePage = (props) => {
           <ConditionalRender condition={!deviceLookup.lookup}>
             <ConditionalRender condition={deviceDetails.contractAddress != null && deviceDetails.tokenId != null}>
               <Box sx={{ marginTop: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <ViewNFTButton/>
+                <ViewNFTButton onClick={goToNFT}/>
               </Box>
             </ConditionalRender>
             <ConditionalRender condition={deviceDetails.poipEventId != null}>
               <Box sx={{ marginTop: 2, display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <ViewPOIPButton/>
+                <ViewPOIPButton onClick={goToPOIP}/>
               </Box>
             </ConditionalRender>
           </ConditionalRender>
           <Typography color="background.main" gutterBottom>
           </Typography>
         </Box>
-       
       </BoundingBox>
       <Snackbar open={false} autoHideDuration={6000} onClose={handleClose}>
         <MuiAlert onClose={handleClose} severity="error" sx={{ width: '100%' }}>

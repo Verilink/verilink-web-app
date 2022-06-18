@@ -14,6 +14,9 @@ import { MATIC_PROVIDER } from '../config/settings';
 import generateCmd from '../helpers/generateCMD';
 import { ethers } from 'ethers';
 
+import nftStore from './nftStore';
+import poipStore from './poipStore';
+
 const TAG_DOMAIN = process.env.REACT_APP_TAG_DOMAIN;
 
 const deviceStore = create((set) => ({
@@ -62,6 +65,7 @@ const deviceStore = create((set) => ({
     console.log(`Keys: ${JSON.stringify(keys)}`)
     if(keys && keys.primaryPublicKeyRaw)
     {
+      console.log(`PublicKey: ${parsePublicKey(keys.primaryPublicKeyRaw)}`);
       set({ 
         keys: {...state.keys, ...keys }, 
         publicKey: parsePublicKey(keys.primaryPublicKeyRaw), 
@@ -149,6 +153,19 @@ const deviceStore = create((set) => ({
       const data = result.data;
       console.log(`Data: ${JSON.stringify(data)}`);
 
+      const { init: poipInit } = poipStore.getState();
+      const { init: nftInit } = nftStore.getState();
+
+      if(data.poipEventId)
+      {
+        poipInit(parseInt(data.poipEventId));
+      }
+
+      if(data.contractAddress && data.tokenId)
+      {
+        nftInit(data.contractAddress, parseInt(data.tokenId));
+      }
+      
       set({ 
         contractAddress: data.contractAddress,
         tokenId: data.tokenId,

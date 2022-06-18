@@ -34,7 +34,7 @@ const TagNFTPage = (props) => {
 
   console.log(`MediaSize: ${mediaSize}`)
   return (
-    <Box style={{ 
+    <Box sx={{ 
       marginTop: 0, 
       marginBottom: 20, 
       width: "100%",

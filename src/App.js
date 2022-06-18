@@ -18,11 +18,11 @@ import TagScanPage from './pages/tagScanPage';
 import TagNFTPage from './pages/tagNFTPage';
 import PoipPage from './pages/poipPage';
 import DevicePage from './pages/devicePage';
+import TestPage from './pages/testPage';
 
 const PageElement = ({name}) => {
   return (<div style={{ height: 50 }}>{name}</div>);
 }
-
 
 function App() {
   return (
@@ -31,11 +31,12 @@ function App() {
         <BrowserRouter>
           <Header/>
           <Routes>
-            <Route path={routes.home} element={<DevicePage/>}/>
+            <Route path={routes.home} element={<TagScanPage/>}/>
             <Route path={routes.scan} element={<TagScanPage/>}/>
             <Route path={routes.device} element={<DevicePage/>}/>
             <Route path={routes.nft} element={<TagNFTPage/>}/>
             <Route path={routes.poip} element={<PoipPage/>}/>
+            <Route path={routes.test} element={<TestPage/>}/>
           </Routes>
           <Footer/>
         </BrowserRouter>

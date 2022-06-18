@@ -2,18 +2,19 @@ import React from 'react';
 import { getPOIPMetadataURI } from '../config/endpoints';
 import { supportIpfsUrl } from './ipfs';
 import axios from 'axios';
-
-const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
+import { POIP_ADDRESS } from '../config/settings';
 
 export const fetchPOIPMetadata = async (eventId) => {
-  const internalFetchUrl = getPOIPMetadataURI(contractAddress, eventId);
+
+  const internalFetchUrl = getPOIPMetadataURI(POIP_ADDRESS, eventId);
   const result = await axios(internalFetchUrl);
+
   const data = result.data;
   
-  if(data.metadata)
+  if(data.metadata && !data.ipfs_cached)
   { /* handle IPFS metadata */
     const ipfsResult = await axios(supportIpfsUrl(data.metadata));
-    return processPOIPMetadata({})
+    return processPOIPMetadata(ipfsResult);
   }
   else
   {
@@ -21,66 +22,35 @@ export const fetchPOIPMetadata = async (eventId) => {
   }
 }
 
-export const processPOIPMetadata = (metadata, low_res=true) => {
+export const processPOIPMetadata = (metadata) => {
   if(!metadata) return null;
-
-	/* TODO: data design for extra images / videos */
-  let physicalMedia = []
-	if(metadata.physicalWork)
-	{
-		physicalMedia.push(
-			{
-				type: "image",
-				src: metadata.physicalWork
-			}
-		);
-	}
 	
-	let digitalMedia = []
+	console.log(`Processing metadata: ${JSON.stringify(metadata)}`);
 
-	if(metadata.animation_url && low_res && metadata.previewMedia?.animation_url)
+	let image = null;
+	if(metadata.image)
 	{
-		digitalMedia.push(
-			{
-				type: "video",
-				src: metadata.previewMedia.animation_url
-			}
-		)
+		image = {
+			type: "image",
+			src: metadata.image
+		};
 	}
-	else if(metadata.animation_url)
+
+	let animation_url = null;
+	if(metadata.animation_url)
 	{
-		digitalMedia.push(
-			{
-				type: "video",
-				src: metadata.animation_url
-			}
-		)
-	}
-	else if(metadata.image && low_res && metadata.previewMedia?.image){
-		digitalMedia.push(
-			{
-				type: "image",
-				src: metadata.previewMedia.image
-			}
-		)
-	}
-	else if(metadata.image) 
-	{
-		digitalMedia.push(
-			{
-				type: "image",
-				src: metadata.image
-			}
-		)
+		animation_url = {
+			type: "video",
+			src: metadata.animation_url
+		};
 	}
 
 	return {
-		physicalMedia,
-    digitalMedia,
+		image,
+		animation_url,
 		title: metadata.name,
 		creator: metadata.creator,
     description: metadata.description,
-		contractAddress: metadata.contractAddress,
-		tokenId: metadata.tokenID,
+		eventId: metadata.tokenId
 	}
 }

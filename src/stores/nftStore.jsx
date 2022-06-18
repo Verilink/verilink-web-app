@@ -13,9 +13,7 @@ const nftStore = create((set) => ({
   loading: false,
   error: '',
 
-  init: () => {
-    const { contractAddress: _contractAddress, tokenId: _tokenId } =
-      deviceStore.getState();
+  init: (_contractAddress, _tokenId) => {
 
     set({
       contractAddress: _contractAddress,
