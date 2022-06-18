@@ -7,6 +7,18 @@ import ConditionalRender from '../hoc/ConditionalRender';
 
 const INFINITE_YEARS = 10;
 
+const CenteredLogo = () => {
+  return (
+    <Box sx={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      <AllInclusiveIcon/>
+    </Box>
+  )
+}
+
 const EventTimes = (props) => {
 
   const startTime = moment.unix(props.startTime);
@@ -25,17 +37,12 @@ const EventTimes = (props) => {
       }}
     >
       <Typography>
-        <ConditionalRender condition={isFutureInfinite && isPastInfinite}>
-          <AllInclusiveIcon/>
-        </ConditionalRender>
-        <ConditionalRender condition={isFutureInfinite && !isPastInfinite}>
-          {startTime.format("LLL")} - 
-          <AllInclusiveIcon/>
-        </ConditionalRender>
-        <ConditionalRender condition={!isFutureInfinite && isPastInfinite}>
-          <AllInclusiveIcon/>
-          {finishTime.format("LLL")}
-        </ConditionalRender>
+        {
+          (isFutureInfinite && isPastInfinite) ? <CenteredLogo/> :
+          (isFutureInfinite) ? (startTime.format("LLL") -  <CenteredLogo/>) :
+          (isPastInfinite) ? (<CenteredLogo/> - finishTime.format("LLL")) :
+          (startTime.format("LLL") - finishTime.format("LLL")) 
+        }
       </Typography>
     </Box>
   )
