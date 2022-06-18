@@ -22,7 +22,7 @@ const poipStore = create((set) => ({
   tokenLimit: null,
   tokensMinted: null,
   startTime: null,
-  endTime: null,
+  finishTime: null,
 
   init: (poipEventId) => {
     set({ eventId: poipEventId });
@@ -54,11 +54,12 @@ const poipStore = create((set) => ({
       if(eventId == -1) throw `Invalid eventId: ${eventId}`;
 
       const result = await fetchPOIPMetadata(eventId);
-      const tokenLimit = await eventTokenLimit(MATIC_PROVIDER, eventId);
-      const tokensMinted = await eventTokensMinted(MATIC_PROVIDER, eventId);
-      const startTime = await eventStart(MATIC_PROVIDER, eventId);
-      const endTime = await eventFinish(MATIC_PROVIDER, eventId);
-      
+      const tokenLimit = (await eventTokenLimit(MATIC_PROVIDER, eventId)).toNumber();
+      const tokensMinted = (await eventTokensMinted(MATIC_PROVIDER, eventId)).toNumber();
+      const startTime = (await eventStart(MATIC_PROVIDER, eventId)).toNumber();
+      const finishTime = (await eventFinish(MATIC_PROVIDER, eventId)).toNumber();
+      console.log(`Start Time: ${JSON.stringify(startTime)}`);
+      console.log(`Finish Time: ${JSON.stringify(finishTime)}`)
       set({
         loading: false,
         metadata: result,
@@ -66,7 +67,7 @@ const poipStore = create((set) => ({
         tokenLimit,
         tokensMinted,
         startTime,
-        endTime
+        finishTime
       });
     }
     catch(error)
