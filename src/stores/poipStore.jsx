@@ -1,10 +1,14 @@
 import create from 'zustand';
-
 import { fetchPOIPMetadata } from '../helpers/poipMetadata';
-import { ethers } from 'ethers';
 import { MATIC_PROVIDER } from '../config/settings';
 import moment from 'moment';
-
+import { 
+  claimMessage, 
+  buildPoipMintChipMessage, 
+  backendPoipMintRequest
+  } from "../web3/poip/mintFlow";
+import generateCmd from '../helpers/generateCMD';
+import { hexStringFromUint8 } from "../helpers/parseKeys";
 import { 
   eventTokenLimit, 
   eventTokensMinted,
@@ -12,6 +16,7 @@ import {
   eventFinish,
   eventCreator
  } from '../web3/interfaces/IPOIP/IPOIP';
+import deviceStore from './deviceStore';
 
 const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
 
@@ -37,7 +42,6 @@ const poipStore = create((set) => ({
 
   eventId: -1,
   metadata: null,
-  claimable: false,
   loading: false,
   error: '',
   tokenLimit: null,
@@ -45,21 +49,29 @@ const poipStore = create((set) => ({
   startTime: null,
   finishTime: null,
   loaded: false,
+  minting: false,
+  errorMinting: false,
+  transactionHash: null,
 
   init: (poipEventId) => {
     set({ eventId: poipEventId });
   },
 
   /* add the poll to the all */
-
   reset: () => {
     set({
       eventId: -1,
       metadata: null,
-      claimable: false,
       loading: false,
       loaded: false,
-      error: ''
+      error: '',
+      tokenLimit: null,
+      tokensMinted: null,
+      startTime: null,
+      finishTime: null,
+      minting: false,
+      errorMinting: false,
+      transactionHash: null
     });
   },
 
@@ -112,7 +124,7 @@ const poipStore = create((set) => ({
   tokensLeft: () => {
     const { eventId, loaded, tokensMinted, tokenLimit } = poipStore.getState();
     if(eventId == -1 || loaded == false) return 0;
-    else return tokenLimit - tokensMinted;
+    return tokenLimit - tokensMinted;
   },
 
   isEventLive: () => {
@@ -122,21 +134,51 @@ const poipStore = create((set) => ({
     else
     {
       let now = moment();
-      let startMoment = moment().unix(startTime);
-      let finishMoment = moment().unix(finishTime);
+      let startMoment = moment.unix(startTime);
+      let finishMoment = moment.unix(finishTime);
 
       if(now >= startMoment && now <= finishMoment)
       {
         return true;
       }
+      else
+      {
+        return false;
+      }
     }
   },
 
-  isClaimable: async () => {
+  isClaimable: () => {
     const { isEventLive, tokensLeft } = poipStore.getState();
-
     return (isEventLive() == true) && (tokensLeft() > 0);
+  },
+
+  mintPOIP: async (address) => {
+
+    const { chipId, triggerScan } = deviceStore.getState();
+    const { eventId, isClaimable } = poipStore.getState();
+
+    if(isClaimable())
+    {
+      set({ minting: true, errorMinting: false, transactionHash: null });
+      try
+      {
+        const { message, block } = await buildPoipMintChipMessage(eventId, chipId);
+        const sigCmd = generateCmd(1, 1, message, false);
+        const sig = await triggerScan(sigCmd);
+        const signature = hexStringFromUint8(sig);
+        const request = await backendPoipMintRequest(address, eventId, block.hash, chipId, signature, message);
+        console.log(`Request: ${JSON.stringify(request)}`);
+        set({ minting: false, errorMinting: false, transactionHash: "0x69" })
+      }
+      catch(error) 
+      {
+        console.log(`Error minting POIP: ${error}`);
+        set({ minting: false, errorMinting: true, transactionHash: null });
+      }
+    }
   }
+
 }));
 
 export default poipStore;

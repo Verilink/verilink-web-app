@@ -118,8 +118,7 @@ const VerifyCreator = (props) => {
 
     verify();
   }, []);
-
-  console.log(`Data: ${data}`)
+  
   return (
     <Box sx={{
       display: "flex",

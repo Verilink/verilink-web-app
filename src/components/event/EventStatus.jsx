@@ -9,8 +9,6 @@ import VerticalDivider from '../ui/VerticalDivider';
 const INFINITE_YEARS = 10;
 
 const InfiniteWindow = (props) => {
-  console.log(`StartTime: ${JSON.stringify(props.startTime)}`);
-  console.log(`FinishTime: ${JSON.stringify(props.finishTime)}`);
 
   return (
     <Box sx={{ 

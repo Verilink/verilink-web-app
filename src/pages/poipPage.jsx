@@ -61,6 +61,8 @@ const PoipPage = (props) => {
 
   const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
   const isClaimable = poipStore((s) => s.isClaimable);
+  const mintPOIP = poipStore((s) => s.mintPOIP);
+
   useInterval(pollTokensMinted, TOKENS_MINTED_POLL_INTERVAL);
 
   const poipDetails = poipStore((s) => ({
@@ -74,6 +76,15 @@ const PoipPage = (props) => {
     error: s.error,
     creator: s.creator
   }));
+
+  const mintDetails = poipStore((s) => ({
+    minting: s.minting,
+    errorMinting: s.errorMinting
+  }));
+
+  const onMintPOIP = async (address) => {
+    await mintPOIP(address);
+  }
 
   const details = getPoipDetails(defaultPoipDetails, poipDetails);
 
@@ -124,7 +135,7 @@ const PoipPage = (props) => {
           </Box>
         </ConditionalRender>
         <Box>
-          <Typography paragraph>
+          <Typography paragraph component={"div"}>
             <ReactMarkdown children={details.metadata.description} className="line-break" />
           </Typography>
         </Box>
@@ -187,7 +198,12 @@ const PoipPage = (props) => {
           </Grid>
         </Box>
       </Container>
-      <ClaimModal open={claimModalOpen} onClose={onClaimModalClose}/>
+      <ClaimModal 
+        open={claimModalOpen} 
+        onClose={onClaimModalClose}
+        onClaim={onMintPOIP}
+        loading={mintDetails.minting}
+      />
     </Box>
   )
 }

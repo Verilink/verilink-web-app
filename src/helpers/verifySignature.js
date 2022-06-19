@@ -1,7 +1,8 @@
 import { ethers } from "ethers"
+import { parseChipId, hexStringFromUint8 } from "./parseKeys"
 
 // This shit is nasty.
-const unpackDERSig = (sig) => {
+export const unpackDERSig = (sig) => {
   let header0 = sig.slice(0, 2)
   if (parseInt('0x' + header0) !== 0x30) {
     throw Error('Invalid header.')
@@ -40,41 +41,22 @@ const unpackDERSig = (sig) => {
   }
 }
 
-const getPublicKeyFromSignature = (message, signature) => {
-
+export function decodeSignatureWithChipId (message, signature, chipId) {
   const sigRaw = unpackDERSig(signature);
 
-  let vByte = 
-
-}
-
-export function verifySignature(message, signature, publicKey) {
-  console.log(`digest: ${message}`);
-  console.log(`signature: ${signature}`);
-  console.log(`publicKey: ${publicKey}`);
-
-  // Compute the Ethereum address from the publicKey.
-  const computedAddress = ethers.utils.computeAddress('0x' + publicKey)
-  console.log(`computed address: ${computedAddress}`);
-
-  // Strip out DER formatting to get r and s.
-  const sigRaw = unpackDERSignature(signature);
-  console.log(`sig r: ${sigRaw.r}`);
-  console.log(`sig s: ${sigRaw.s}`)
-
-  // We generate DER signatures, not RLP. As such we do not have the v parameter and must ascertain it.
   let vByte = new Uint8Array(1);
   vByte[0] = 27;
-  const vByte0 = buf2hex(vByte);
+  const vByte0 = hexStringFromUint8(vByte);
   vByte[0] = 28;
-  const vByte1 = buf2hex(vByte);
+  const vByte1 = hexStringFromUint8(vByte);
 
-  // Test which byte was used in the message.
-  switch(computedAddress) {
-    case ethers.utils.verifyMessage(message, '0x' + sigRaw.r + sigRaw.s + vByte0):
-      return true;
-    case ethers.utils.verifyMessage(message, '0x' + sigRaw.r + sigRaw.s + vByte1):
-      return true;
+  switch(chipId)
+  {
+    case parseChipId(ethers.utils.recoverPublicKey(message, "0x" + sigRaw.r + sigRaw.s + vByte0).slice(2)):
+      return { r: "0x" + sigRaw.r, s: "0x" + sigRaw.s, v: "0x" + vByte0 };
+    case parseChipId(ethers.utils.recoverPublicKey(message, "0x" + sigRaw.r + sigRaw.s + vByte1).slice(2)):
+      return { r: "0x" + sigRaw.r, s: "0x" + sigRaw.s, v: "0x" + vByte1 };
     default:
-    return false;
+      throw "Fuck!";
   }
+}

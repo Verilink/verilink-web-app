@@ -1,9 +1,14 @@
 import { ethers } from 'ethers'
 import { hexStringFromUint8 } from './parseKeys'
 
-export default function generateCmd(cmd, keyslot, message = null) {
+export default function generateCmd(cmd, keyslot, message = null, prefix=true) {
   // EIP-191 signed data for local verification.
-  let messageBytes = ethers.utils.hashMessage(message)
+  let messageBytes = message;
+
+  if(prefix)
+  {
+    messageBytes = ethers.utils.hashMessage(message);
+  }
 
   // Remove prepended 0x.
   messageBytes = messageBytes.slice(2)
@@ -16,6 +21,5 @@ export default function generateCmd(cmd, keyslot, message = null) {
 
   // Prepend the message with the command.
   const inputBytes = cmdBytes + messageBytes
-
   return inputBytes
 }
