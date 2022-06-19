@@ -19,7 +19,7 @@ const TokenStatus = (props) => {
       }}
     >
       <Typography>
-        POIs Minted: {props.tokensMinted} out of {infinite ? " " : props.tokenLimit}
+       {props.tokensMinted} out of {infinite ? " " : props.tokenLimit}
       </Typography>
       <ConditionalRender condition={infinite}>
         <AllInclusiveIcon style={{ marginLeft: 5}}/>
