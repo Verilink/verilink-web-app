@@ -3,6 +3,8 @@ import create from 'zustand';
 import { fetchPOIPMetadata } from '../helpers/poipMetadata';
 import { ethers } from 'ethers';
 import { MATIC_PROVIDER } from '../config/settings';
+import moment from 'moment';
+
 import { 
   eventTokenLimit, 
   eventTokensMinted,
@@ -107,8 +109,33 @@ const poipStore = create((set) => ({
     }
   },
 
+  tokensLeft: () => {
+    const { eventId, loaded, tokensMinted, tokenLimit } = poipStore.getState();
+    if(eventId == -1 || loaded == false) return 0;
+    else return tokenLimit - tokensMinted;
+  },
+
+  isEventLive: () => {
+    const { eventId, loaded, startTime, finishTime } = poipStore.getState();
+
+    if(eventId == -1 || loaded == false) return false;
+    else
+    {
+      let now = moment();
+      let startMoment = moment().unix(startTime);
+      let finishMoment = moment().unix(finishTime);
+
+      if(now >= startMoment && now <= finishMoment)
+      {
+        return true;
+      }
+    }
+  },
+
   isClaimable: async () => {
-    /* TODO */
+    const { isEventLive, tokensLeft } = poipStore.getState();
+
+    return (isEventLive() == true) && (tokensLeft() > 0);
   }
 }));
 

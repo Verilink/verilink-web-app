@@ -1,5 +1,6 @@
 import React from 'react';
 import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import MediaCard from '../components/nft/mediaCard';
 import useWindowDimensions from '../helpers/windowDimensions';
@@ -9,14 +10,13 @@ import poipStore from '../stores/poipStore';
 import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
 import TokenStatus from '../components/event/TokenStatus';
-import TokenLimit from '../components/event/TokenLimit';
 import Grid from '@mui/material/Grid';
 import useInterval from '../hooks/useInterval';
-import { ethers } from 'ethers';
 import OpenseaButton from "../components/buttons/openseaButton";
 import PolygonScanButton from "../components/buttons/polygonScanButton";
 import ClipboardCopy from '../components/buttons/clipboardCopy';
 import VerifyCreator from '../components/event/VerifyCreator';
+import ClaimModal from '../components/modals/claimModal';
 
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
@@ -55,8 +55,12 @@ const getPoipDetails = (defaultDetails, poipDetails) => {
 }
 
 const PoipPage = (props) => {
+  const [claimModalOpen, setClaimModalOpen] = React.useState(false);
+  const onClaimModalClose = () => { setClaimModalOpen(false); }
+  const onClickClaim = () => { setClaimModalOpen(true); }
 
   const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
+  const isClaimable = poipStore((s) => s.isClaimable);
   useInterval(pollTokensMinted, TOKENS_MINTED_POLL_INTERVAL);
 
   const poipDetails = poipStore((s) => ({
@@ -109,10 +113,17 @@ const PoipPage = (props) => {
         <EventStatus 
           startTime={details.startTime} 
           finishTime={details.finishTime}/>
-        <TokenStatus
-          tokensMinted={details.tokensMinted}
-          tokenLimit={details.tokenLimit}/>
-        <Box style={{ marginTop: 5, }}>
+       
+        <ConditionalRender condition={isClaimable()}>
+          <Box sx={{ ...centerFlex, marginTop: 1, marginBottom: 3 }}>
+            <Button variant="contained" color="primary"
+              onClick={onClickClaim}
+            >
+              Claim POI #{details.tokensMinted + 1}
+            </Button>
+          </Box>
+        </ConditionalRender>
+        <Box>
           <Typography paragraph>
             <ReactMarkdown children={details.metadata.description} className="line-break" />
           </Typography>
@@ -130,7 +141,6 @@ const PoipPage = (props) => {
             Event Details
           </Typography>
           <Grid container spacing={2}>
-
             <Grid item xs={3}>
               <Box sx={{  display: "flex", alignItems: "center"}}>
                 <Typography  align="center" style={{ }}>
@@ -149,13 +159,13 @@ const PoipPage = (props) => {
             <Grid item xs={3}>
               <Box sx={{  display: "flex", alignItems: "center"}}>
                 <Typography  align="center" style={{ }}>
-                  POI Limit
+                  POIs
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={9}>
               <Box sx={{ display: "flex", justifyContent: "left", alignItems: "center"}}> 
-                <TokenLimit tokenLimit={details.tokenLimit}/>
+              <TokenStatus tokensMinted={details.tokensMinted} tokenLimit={details.tokenLimit}/>
               </Box>
             </Grid>
 
@@ -177,6 +187,7 @@ const PoipPage = (props) => {
           </Grid>
         </Box>
       </Container>
+      <ClaimModal open={claimModalOpen} onClose={onClaimModalClose}/>
     </Box>
   )
 }
