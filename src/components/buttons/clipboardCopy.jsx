@@ -19,7 +19,9 @@ const ClipboardCopy = (props) => {
 
   return (
     <>
-    <IconButton onClick={onClick} aria-label="copy to clipboard">
+    <IconButton onClick={onClick} aria-label="copy to clipboard"
+      size="small"
+    >
       <AssignmentIcon/>
     </IconButton>
     <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>

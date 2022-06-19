@@ -13,6 +13,24 @@ import {
 
 const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
 
+const safeBigNumber = (bn, maxBits=-1) => {
+  try
+  {
+    const number = bn.toNumber();
+    return number;
+  }
+  catch(error)
+  {
+    console.log("max safe");
+    if(maxBits == -1) {
+      return Number.MAX_SAFE_INTEGER;
+    }
+    else {
+      return Math.pow(2, maxBits);
+    }
+  }
+}
+
 const poipStore = create((set) => ({
 
   eventId: -1,
@@ -24,6 +42,7 @@ const poipStore = create((set) => ({
   tokensMinted: null,
   startTime: null,
   finishTime: null,
+  loaded: false,
 
   init: (poipEventId) => {
     set({ eventId: poipEventId });
@@ -37,14 +56,18 @@ const poipStore = create((set) => ({
       metadata: null,
       claimable: false,
       loading: false,
+      loaded: false,
       error: ''
     });
   },
 
   pollTokensMinted: async () => {
-    const { eventId } = poipStore.getState();
-    const tokensMinted = await eventTokenLimit(MATIC_PROVIDER, eventId);
-    set({ tokensMinted });
+    const { eventId, loaded } = poipStore.getState();
+    if(loaded)
+    {
+      const tokensMinted = safeBigNumber(await eventTokensMinted(MATIC_PROVIDER, eventId));
+      set({ tokensMinted });
+    }
   },
 
   loadPOIP: async () => {
@@ -55,13 +78,14 @@ const poipStore = create((set) => ({
       if(eventId == -1) throw `Invalid eventId: ${eventId}`;
 
       const result = await fetchPOIPMetadata(eventId);
-      const tokenLimit = (await eventTokenLimit(MATIC_PROVIDER, eventId)).toNumber();
-      const tokensMinted = (await eventTokensMinted(MATIC_PROVIDER, eventId)).toNumber();
-      const startTime = (await eventStart(MATIC_PROVIDER, eventId)).toNumber();
-      const finishTime = (await eventFinish(MATIC_PROVIDER, eventId)).toNumber();
+      const tokenLimit = safeBigNumber(await eventTokenLimit(MATIC_PROVIDER, eventId));
+      const tokensMinted = safeBigNumber(await eventTokensMinted(MATIC_PROVIDER, eventId));
+      const startTime = safeBigNumber(await eventStart(MATIC_PROVIDER, eventId), 32);
+      const finishTime = safeBigNumber(await eventFinish(MATIC_PROVIDER, eventId), 32);
       const creator = (await eventCreator(MATIC_PROVIDER, eventId));
-      
+
       set({
+        loaded: true,
         loading: false,
         metadata: result,
         error: '',
