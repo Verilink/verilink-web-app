@@ -12,12 +12,15 @@ import TokenStatus from '../components/event/TokenStatus';
 import TokenLimit from '../components/event/TokenLimit';
 import Grid from '@mui/material/Grid';
 import useInterval from '../hooks/useInterval';
-
+import { ethers } from 'ethers';
 import OpenseaButton from "../components/buttons/openseaButton";
 import PolygonScanButton from "../components/buttons/polygonScanButton";
+import ClipboardCopy from '../components/buttons/clipboardCopy';
+import VerifyCreator from '../components/event/VerifyCreator';
 
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
+import ConditionalRender from '../components/hoc/ConditionalRender';
 
 const centerFlex = {
   display: "flex",
@@ -34,14 +37,14 @@ const defaultPoipDetails = {
     creator: "Isaac",
     image: logo
   },
-  startTime: Math.floor(((new Date()).getTime()) / 1000) - 2000,
+  startTime:  Math.floor(((new Date()).getTime()) / 1000) - 2000,
   finishTime: Math.floor(((new Date()).getTime()) / 1000) + 2000,
   tokensMinted: 420,
   tokenLimit: 1000,
   creator: "0xdd98001c33c0c75d0952439699c33b1a02cf23a9"
 };
 
-const TOKENS_MINTED_POLL_INTERVAL = 2000;
+const TOKENS_MINTED_POLL_INTERVAL = 10000;
 
 const getPoipDetails = (defaultDetails, poipDetails) => {
   return Object.entries(poipDetails).reduce((prev, cur) => {
@@ -52,6 +55,9 @@ const getPoipDetails = (defaultDetails, poipDetails) => {
 }
 
 const PoipPage = (props) => {
+
+  const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
+  useInterval(pollTokensMinted, TOKENS_MINTED_POLL_INTERVAL);
 
   const poipDetails = poipStore((s) => ({
     eventId: s.eventId,
@@ -65,16 +71,10 @@ const PoipPage = (props) => {
     creator: s.creator
   }));
 
-  const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
-
-  useInterval(pollTokensMinted, TOKENS_MINTED_POLL_INTERVAL);
-
   const details = getPoipDetails(defaultPoipDetails, poipDetails);
 
   const windowDimensions = useWindowDimensions();
   const mediaSize = Math.min(windowDimensions.width - 20, MAX_VIEWPORT_WIDTH - 40);
-
-  console.log(`Details: ${JSON.stringify(details)}`);
 
   React.useEffect(() => {
     const { loadPOIP } = poipStore.getState();
@@ -105,6 +105,7 @@ const PoipPage = (props) => {
         <Typography 
           align="center" variant="h6" 
           style={{ fontStyle: "italic", }}>by {details.metadata.creator}</Typography>
+        <VerifyCreator creator={details.metadata.creator} address={details.creator}/>
         <EventStatus 
           startTime={details.startTime} 
           finishTime={details.finishTime}/>
@@ -131,9 +132,11 @@ const PoipPage = (props) => {
           <Grid container spacing={2}>
 
             <Grid item xs={3}>
-              <Typography  align="left" style={{ marginLeft: 10,  }}>
-                Timeline
-              </Typography>
+              <Box sx={{  display: "flex", alignItems: "center"}}>
+                <Typography  align="center" style={{ }}>
+                  Timeline
+                </Typography>
+              </Box>
             </Grid>
             <Grid item xs={9}>
               <Box sx={{ display: "flex", justifyContent: "left"}}> 
@@ -144,24 +147,31 @@ const PoipPage = (props) => {
             </Grid>
             
             <Grid item xs={3}>
-              <Typography  align="left" style={{ marginLeft: 10,  }}>
-                POI Limit
-              </Typography>
+              <Box sx={{  display: "flex", alignItems: "center"}}>
+                <Typography  align="center" style={{ }}>
+                  POI Limit
+                </Typography>
+              </Box>
             </Grid>
             <Grid item xs={9}>
-              <Box sx={{ display: "flex", justifyContent: "left"}}> 
+              <Box sx={{ display: "flex", justifyContent: "left", alignItems: "center"}}> 
                 <TokenLimit tokenLimit={details.tokenLimit}/>
               </Box>
             </Grid>
 
             <Grid item xs={3}>
-              <Typography  align="left" style={{ marginLeft: 10,  }}>
-                Creator
-              </Typography>
+              <Box sx={{  display: "flex", alignItems: "center",}}>
+                <Typography align="left" style={{ }}>
+                  Creator
+                </Typography>
+              </Box>
             </Grid>
             <Grid item xs={9}>
-              <Box sx={{ display: "flex", justifyContent: "left"}}> 
-                <Typography align="center" style={{  }}>{details.creator}</Typography>
+              <Box sx={{ display: "flex", justifyContent: "left", }}> 
+                <Typography align="center" style={{  marginRight: 5, }}>
+                  {details.creator.slice(0, 10) + "..." + details.creator.slice(-10)}
+                </Typography>
+                  <ClipboardCopy text={details.creator}/>
               </Box>
             </Grid>
           </Grid>

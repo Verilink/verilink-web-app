@@ -2,9 +2,10 @@ import React from 'react';
 import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
 import TokenStatus from '../components/event/TokenStatus';
-import VerifyCreator from '../components/event/VerifyCreator';
 import OpenseaButton from '../components/buttons/openseaButton';
 import PolygonScanButton from '../components/buttons/polygonScanButton';
+import VerifyCreator from '../components/event/VerifyCreator';
+
 const TestPage = () => {
 
   var startTime = new Date();
@@ -26,8 +27,10 @@ const TestPage = () => {
       alignItems: "center",
       borderStyle: "1px solid black"
     }}>
-      <OpenseaButton contractAddress="0x6969" tokenId={1}/>
-      <PolygonScanButton contractAddress="0x6969"/>
+      <VerifyCreator 
+        address={"0xdd98001c33c0c75d0952439699c33b1a02cf23a9"}
+        creator={"verilink"}
+      />
     </div>
     </div>
   );
