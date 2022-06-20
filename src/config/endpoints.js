@@ -26,3 +26,5 @@ export const getOpenseaMaticURI = (contractAddress, tokenID) =>
 export const getScannerMaticURI = (contractAddress) => {
 	return `${SCANNER_MATIC_BASE}${contractAddress}`;
 }
+
+export const getMintRequestURI = () => `${API_ENDPOINT}/user/claimPoi`;

@@ -4,6 +4,9 @@ import { MATIC_PROVIDER } from "../../config/settings";
 /* Required Interfaces */
 import { recoverRSV, formatSignature } from "../utils/signature";
 import { decodeSignatureWithChipId } from "../../helpers/verifySignature";
+import axios from 'axios';
+import { getMintRequestURI } from "../../config/endpoints";
+
 /**********************************************************
     The Backend will be charged the gas fees
 
@@ -25,27 +28,27 @@ import { decodeSignatureWithChipId } from "../../helpers/verifySignature";
  */
 function claimMessage(eventId, chipId, blockHash) {
 
-  const prefix = "\x19Ethereum Signed Message:\n32";
-  /* pack the data and hash */
-  let hash = ethers.utils.keccak256(
-      ethers.utils.arrayify(
-          ethers.utils.solidityPack(
-              ["uint256", "bytes32", "bytes32"],
-              [eventId, chipId, blockHash]
-          ))
-  );
+    const prefix = "\x19Ethereum Signed Message:\n32";
+    /* pack the data and hash */
+    let hash = ethers.utils.keccak256(
+        ethers.utils.arrayify(
+            ethers.utils.solidityPack(
+                ["uint256", "bytes32", "bytes32"],
+                [eventId, chipId, blockHash]
+            ))
+    );
 
-  hash = ethers.utils.arrayify(hash);
+    hash = ethers.utils.arrayify(hash);
 
-  let message = ethers.utils.keccak256(
-      ethers.utils.arrayify(
-          ethers.utils.solidityPack(
-              ["string", "bytes32"],
-              [prefix, hash]
-          ))
-  );
+    let message = ethers.utils.keccak256(
+        ethers.utils.arrayify(
+            ethers.utils.solidityPack(
+                ["string", "bytes32"],
+                [prefix, hash]
+            ))
+    );
 
-  return ethers.utils.hexlify(message);
+    return ethers.utils.hexlify(message);
 }
 
 /**
@@ -69,18 +72,12 @@ export async function buildPoipMintChipMessage(eventId, chipId) {
     }
 }
 
-export async function backendPoipMintRequest 
-    (email, eventId, blockhash, chipId, signature, message)
-{
-  const { r, s, v } = decodeSignatureWithChipId(message, signature, chipId);
-  let sig = formatSignature(r, s, v);
+export async function backendPoipMintRequest(email, eventId, blockhash, chipId, signature, message) {
+    const { r, s, v } = decodeSignatureWithChipId(message, signature, chipId);
+    let signature = formatSignature(r, s, v);
 
-  return {
-    email,
-    eventId,
-    blockhash,
-    chipId,
-    signature: sig,
-    message
-  };
+    const result = await axios.post(getMintRequestURI(), {
+        email, eventId, blockhash, chipId, signature
+    });
+    return result.data;
 }
