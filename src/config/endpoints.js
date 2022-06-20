@@ -28,3 +28,4 @@ export const getScannerMaticURI = (contractAddress) => {
 }
 
 export const getMintRequestURI = () => `${API_ENDPOINT}/user/claimPoi`;
+// export const getMintRequestURI = () => `${'https://bak1.loca.lt'}/dev/claimPoi`;
