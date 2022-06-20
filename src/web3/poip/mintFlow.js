@@ -74,10 +74,10 @@ export async function buildPoipMintChipMessage(eventId, chipId) {
 
 export async function backendPoipMintRequest(email, eventId, blockhash, chipId, signature, message) {
     const { r, s, v } = decodeSignatureWithChipId(message, signature, chipId);
-    let signature = formatSignature(r, s, v);
+    let sig = formatSignature(r, s, v);
 
     const result = await axios.post(getMintRequestURI(), {
-        email, eventId, blockhash, chipId, signature
+        email, eventId, blockhash, chipId, signature: sig
     });
     return result.data;
 }
