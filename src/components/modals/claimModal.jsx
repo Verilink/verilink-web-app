@@ -1,6 +1,7 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
@@ -23,6 +24,16 @@ const validEmail = (email) => {
   var pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; 
   return email.match(pattern);
 }
+
+const LoadingScreen = () => {
+
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <Typography align="center">Pending Blockchain Confirmation...</Typography>
+      <CircularProgress/>
+    </Box>
+  )
+};
 
 const ClaimModal = (props) => {
 
@@ -58,6 +69,8 @@ const ClaimModal = (props) => {
         sx={{ ...modalStyle, backgroundColor: "white", width: mediaSize, }}
       >
         <Container>
+        {
+            props.loading ? <LoadingScreen/> : (<>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "100%", marginBottom: 1 }}>
             <img src={Logo} style={{ width: 24, height: 24, }}/>
           </Box>
@@ -81,7 +94,8 @@ const ClaimModal = (props) => {
             >
               Scan to claim
             </Button>
-          </Box>
+          </Box></>)
+        }
         </Container>
       </Box>
     </Modal>

@@ -40,23 +40,22 @@ const deviceDetailsStub = {
   verified: true
 };
 
-
 const DevicePage = (props) => {
 
   const navigate = useNavigate();
 
-  const deviceLookup = deviceLookupStub; /*deviceStore((s) => ({ 
+  const deviceLookup = deviceStore((s) => ({ 
     loading: s.loadingDevice, 
     error: s.deviceLookupError
-  })); */
+  }));
 
-  const deviceDetails = deviceDetailsStub;/*deviceStore((s) => ({
+  const deviceDetails = deviceStore((s) => ({
     chipId: s.chipId,
     contractAddress: s.contractAddress,
     tokenId: s.tokenId,
     poipEventId: s.poipEventId,
     verified: s.verified
-  })); */
+  }));
 
   const onlyNFT = () => {
     return (deviceDetails.contractAddress != null && deviceDetails.tokenId != null) &&
@@ -65,7 +64,7 @@ const DevicePage = (props) => {
 
   const onlyPOIP = () => {
     return (deviceDetails.contractAddress == null && deviceDetails.tokenId == null) &&
-      (deviceDetails.poipEventId == true);
+      (deviceDetails.poipEventId != null);
   }
 
   const goToPOIP = (replace=false) => {
@@ -77,6 +76,12 @@ const DevicePage = (props) => {
   }
 
   React.useEffect(() => {
+
+    /* quick fix to jump to POIP - remove later */
+    if(deviceDetails.poipEventId != null)
+    {
+      goToPOIP();
+    }
 
     if(onlyNFT())
     {

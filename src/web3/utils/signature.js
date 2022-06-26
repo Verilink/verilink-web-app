@@ -1,71 +1,46 @@
 import { ethers } from "ethers";
-
+import { parseChipId } from "../../helpers/parseKeys";
 /*
     Decodes a DER encoded signature and returns { r, s, v}
 */
 function decodeDERSignature(sig)
 {
-    /* 
-        This helped immensely for obscure rules (0 padding)
-        https://bitcoin.stackexchange.com/questions/92680/what-are-the-der-signature-and-sec-format
-    */
-
-    let header = sig.slice(0, 2);
-    sig = sig.slice(2);
-    if(header != "30")
-    {
-        throw "Invalid DER Header";
+    let header0 = sig.slice(0, 2)
+    if (parseInt('0x' + header0) !== 0x30) {
+      throw Error('Invalid header.')
     }
-    
-    let length = parseInt(sig.slice(0, 2), 16) * 2;
-    sig = sig.slice(2);
-    if(length != sig.length)
-    {
-        throw `Invalid Signature Length, length: ${length}, sig length: ${sig.length}`;
+  
+    let header_r0 = sig.slice(4, 6)
+    let header_r1 = sig.slice(6, 8)
+  
+    if (parseInt('0x' + header_r0) !== 0x02) {
+      throw Error('Invalid header (2).')
     }
-
-    header = sig.slice(0, 2);
-    sig = sig.slice(2);
-    if(header != "02")
-    {
-        throw `R invalid DER header, ${header}`;
+  
+    let length_r = parseInt('0x' + header_r1) * 2
+    let r = sig.slice(8, length_r + 8)
+  
+    let header_s0 = sig.slice(length_r + 8, length_r + 10)
+    let header_s1 = sig.slice(length_r + 10, length_r + 12)
+  
+    if (parseInt('0x' + header_s0) !== 0x02) {
+      throw Error('Invalid header (2).')
     }
-
-    length = parseInt(sig.slice(0, 2), 16) * 2;
-    sig = sig.slice(2);
-
-    if(length > sig.length)
-    {
-        throw `R invalid length, ${length}`;
+  
+    let s = sig.slice(length_r + 12, length_r + 12 + parseInt('0x' + header_s1) * 2)
+  
+    if (r.length == 66) {
+      r = r.slice(2, 130)
     }
-    let r = sig.slice(0, length);
-    sig = sig.slice(length);
-
-    header = sig.slice(0, 2);
-    sig = sig.slice(2);
-    if(header != "02")
-    {
-        throw `S invalid DER header, ${header}`;
+  
+    if (s.length == 66) {
+      s = s.slice(2, 130)
     }
-   
-    length = parseInt(sig.slice(0, 2), 16) * 2;
-    sig = sig.slice(2);
-
-    if(length > sig.length)
-    {
-        throw `S invalid length, ${length}`;
+  
+    return {
+        r: "0x" + r,
+        s: "0x" + s,
     }
-
-    let s = sig.slice(0, length);
-    sig = sig.slice(length);
-
-    /* remove padding if first byte > 0x74 */
-    r = "0x" + r.slice(r.length - 32*2);
-    s = "0x" + s.slice(s.length - 32*2);
-
-    // let v = 27 + (parseInt(r.slice(-2), 16) % 2 != 0);
-
-    return { r, s };
 }
 
 /*
@@ -143,8 +118,11 @@ function recoverRSV(digest, derSignature, chip) {
 
 function _tryRecoveryId2(hashBytes, chip, r, s, v) {
     let etherSig = ethers.utils.joinSignature({ r, s, v });
+    console.log("etherSig:", etherSig);
+
     const recoveredPublicKey = ethers.utils.recoverPublicKey(hashBytes, etherSig)
-    return chip.comparePublicKeyWithChipId(recoveredPublicKey);
+    console.log(`RecoveredPublicKey: ${recoveredPublicKey}`);
+    return chip == parseChipId(recoveredPublicKey);
 }
 
 /*

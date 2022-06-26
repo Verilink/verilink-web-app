@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import MediaCard from '../components/nft/mediaCard';
 import useWindowDimensions from '../helpers/windowDimensions';
 import { MAX_VIEWPORT_WIDTH, POIP_ADDRESS } from '../config/settings';
-import { Typography } from '@mui/material';
+import { Skeleton, Typography } from '@mui/material';
 import poipStore from '../stores/poipStore';
 import EventStatus from '../components/event/EventStatus';
 import EventTimes from '../components/event/EventTimes';
@@ -17,6 +17,8 @@ import PolygonScanButton from "../components/buttons/polygonScanButton";
 import ClipboardCopy from '../components/buttons/clipboardCopy';
 import VerifyCreator from '../components/event/VerifyCreator';
 import ClaimModal from '../components/modals/claimModal';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
@@ -26,6 +28,21 @@ const centerFlex = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center"
+};
+
+const testPoipDetails = {
+  eventId: -1,
+  metadata: {
+    name: "In Search of the Unknown #50",
+    creator: "Dr. Datamosh",
+    image: { src: "ipfs://QmVFdX4kQhcjRWqkmG9oGbrZKG1XJK3nMLSunGXqDxmjzx", type: "image" },
+    description: "Congratulations, you have found \"In Search of the Unknown #50\"! **In Search of the Unknown** is an electro / techno album produced by *Dr. Datamosh* inspired by experiences in the metaverse between 2020-2022. This is the first record released by On-Chain Records. It is only fitting that this is the launch of **Proof of Interaction Protocol** (POIP) by *Verilink* and the first POIP to be released."
+  },
+  startTime: 	1655697600,
+  finishTime: 1656129599,
+  tokensMinted: 0,
+  tokenLimit: 1000000,
+  creator: "0xdd98001c33c0c75d0952439699c33b1a02cf23a9"
 };
 
 const defaultPoipDetails = {
@@ -59,6 +76,12 @@ const PoipPage = (props) => {
   const onClaimModalClose = () => { setClaimModalOpen(false); }
   const onClickClaim = () => { setClaimModalOpen(true); }
 
+  const [poipError, setPoipError] = React.useState({ set: false, message: ""});
+  const onHandleAlertClose = () => { setPoipError({ set: false, message: "" }); }
+
+  const [poipClaimSuccess, setPoipClaimSuccess] = React.useState(false);
+  const onHandleSuccessClose = () => { setPoipClaimSuccess(false); }
+
   const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
   const isClaimable = poipStore((s) => s.isClaimable);
   const mintPOIP = poipStore((s) => s.mintPOIP);
@@ -83,7 +106,21 @@ const PoipPage = (props) => {
   }));
 
   const onMintPOIP = async (address) => {
-    await mintPOIP(address);
+    try
+    {
+      await mintPOIP(address);
+      setPoipClaimSuccess(true);
+    }
+    catch(error)
+    {
+      console.log(`Error Minting POIP: ${error}`);
+      setPoipError({ set: true, message: "Failed to claim the POIP!"})
+      console.log("Mint Error:", poipError)
+    }
+    finally
+    {
+      setClaimModalOpen(false);
+    }
   }
 
   const details = getPoipDetails(defaultPoipDetails, poipDetails);
@@ -92,13 +129,25 @@ const PoipPage = (props) => {
   const mediaSize = Math.min(windowDimensions.width - 20, MAX_VIEWPORT_WIDTH - 40);
 
   React.useEffect(() => {
-    const { loadPOIP } = poipStore.getState();
-    loadPOIP();
+
+    (async () => {
+      const { loadPOIP } = poipStore.getState();
+      try
+      {
+        await loadPOIP();
+      }
+      catch(error)
+      {
+        console.log(`Error loading POIP: ${error}`)
+        setPoipError({ set: true, message: "Failed to load the POIP!"});
+        console.log("Load Error:", poipError)
+      }
+    })()
   }, []);
 
   return (
     <Box sx={{
-      marginTop: 0,
+      marginTop: 1,
       marginBottom: 0,
       width: "100%",
     }}>
@@ -106,16 +155,21 @@ const PoipPage = (props) => {
         display: "flex",
         justifyContent: "center",
         width: "100%",
-        backgroundColor: "gray",
+        //backgroundColor: "gray",
         /* backgroundImage, */
-        marginBottom: 2,
+        marginTop: 2,
+        marginBottom: 0,
       }}>
-        <MediaCard 
-          uri={details.metadata.image} 
-          width={mediaSize}
-          height={mediaSize}/>
+        { !poipDetails.loading ?
+          (<MediaCard 
+            uri={details.metadata.image} 
+            width={mediaSize}
+            height={mediaSize}/>) :
+          (<Skeleton variant={"rectangular"} width={mediaSize} height={mediaSize}/>)
+        }
       </Box>
-      <Container>
+      <Container sx={{ marginTop: 2, }}>
+        { !poipDetails.loading ? (<>
         <Typography align="center" variant="h5">{details.metadata.title}</Typography>
         <Typography 
           align="center" variant="h6" 
@@ -134,10 +188,14 @@ const PoipPage = (props) => {
             </Button>
           </Box>
         </ConditionalRender>
+        </>) : (<Skeleton variant={"text"} />)
+        }
         <Box>
+          { !poipDetails.loading ?(<>
           <Typography paragraph component={"div"}>
             <ReactMarkdown children={details.metadata.description} className="line-break" />
-          </Typography>
+          </Typography></>) : ((<Skeleton variant={"text"} />))
+          }
         </Box>
         <Box>
           <Box sx={{ ...centerFlex, marginTop: 2}}>
@@ -204,6 +262,16 @@ const PoipPage = (props) => {
         onClaim={onMintPOIP}
         loading={mintDetails.minting}
       />
+      <Snackbar open={poipError.set} autoHideDuration={6000} onClose={onHandleAlertClose}>
+        <MuiAlert onClose={onHandleAlertClose} severity="error" sx={{ width: '100%' }}>
+          {poipError.message}
+        </MuiAlert>
+      </Snackbar>
+      <Snackbar open={poipClaimSuccess} autoHideDuration={6000} onClose={onHandleSuccessClose}>
+        <MuiAlert onClose={onHandleSuccessClose} severity="success" sx={{ width: '100%' }}>
+          Successfully claimed the POIP!
+        </MuiAlert>
+      </Snackbar>
     </Box>
   )
 }

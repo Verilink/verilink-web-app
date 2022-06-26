@@ -65,11 +65,10 @@ const deviceStore = create((set) => ({
     console.log(`Keys: ${JSON.stringify(keys)}`)
     if(keys && keys.primaryPublicKeyRaw)
     {
-      console.log(`PublicKey: ${parsePublicKey(keys.primaryPublicKeyRaw)}`);
       set({ 
         keys: {...state.keys, ...keys }, 
-        publicKey: parsePublicKey(keys.primaryPublicKeyRaw), 
-        chipId: parseChipId(keys.primaryPublicKeyRaw)
+        publicKey: parsePublicKey("0x" + keys.primaryPublicKeyRaw), 
+        chipId: parseChipId("0x" + keys.primaryPublicKeyRaw)
       });
     }
   },
@@ -156,7 +155,7 @@ const deviceStore = create((set) => ({
       const { init: poipInit } = poipStore.getState();
       const { init: nftInit } = nftStore.getState();
 
-      if(data.poipEventId)
+      if(data.poipEventId != null && data.poipEventId != -1)
       {
         poipInit(parseInt(data.poipEventId));
       }

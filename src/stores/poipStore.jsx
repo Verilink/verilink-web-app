@@ -17,6 +17,7 @@ import {
   eventCreator
  } from '../web3/interfaces/IPOIP/IPOIP';
 import deviceStore from './deviceStore';
+import { ethers } from 'ethers';
 
 const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
 
@@ -28,7 +29,6 @@ const safeBigNumber = (bn, maxBits=-1) => {
   }
   catch(error)
   {
-    console.log("max safe");
     if(maxBits == -1) {
       return Number.MAX_SAFE_INTEGER;
     }
@@ -37,6 +37,8 @@ const safeBigNumber = (bn, maxBits=-1) => {
     }
   }
 }
+
+/* Todo, throw error up top */
 
 const poipStore = create((set) => ({
 
@@ -54,6 +56,7 @@ const poipStore = create((set) => ({
   transactionHash: null,
 
   init: (poipEventId) => {
+    console.log(`Poip Intialized!: ${poipEventId}`)
     set({ eventId: poipEventId });
   },
 
@@ -118,6 +121,7 @@ const poipStore = create((set) => ({
         metadata: null,
         error: `We couldn't load the POIP with contract address: ${contractAddress}, eventId: ${eventId}`
       });
+      throw `Error Loading POIP: ${error}`
     }
   },
 
@@ -156,8 +160,8 @@ const poipStore = create((set) => ({
   mintPOIP: async (address) => {
 
     const { chipId, triggerScan } = deviceStore.getState();
-    const { eventId, isClaimable } = poipStore.getState();
-
+    const { eventId, isClaimable, metadata } = poipStore.getState();
+    
     if(isClaimable())
     {
       set({ minting: true, errorMinting: false, transactionHash: null });
@@ -167,14 +171,24 @@ const poipStore = create((set) => ({
         const sigCmd = generateCmd(1, 1, message, false);
         const sig = await triggerScan(sigCmd);
         const signature = hexStringFromUint8(sig);
-        const request = await backendPoipMintRequest(address, eventId, block.hash, chipId, signature, message);
-        console.log(`Request: ${JSON.stringify(request)}`);
-        set({ minting: false, errorMinting: false, transactionHash: "0x69" })
+        const response = await backendPoipMintRequest(address, eventId, block.hash, chipId, signature, message, metadata);
+        console.log(`Request: ${JSON.stringify(response)}`);
+
+        const receipt = await MATIC_PROVIDER.waitForTransaction(response.hash);
+        if(receipt.status == 1)
+        {
+          set({ minting: false, errorMinting: false, transactionHash: response.hash })
+        }
+        else
+        {
+          set({ minting: false, errorMinting: true, transactionHash: response.hash });
+        }
       }
       catch(error) 
       {
         console.log(`Error minting POIP: ${error}`);
         set({ minting: false, errorMinting: true, transactionHash: null });
+        throw `Error minting POIP: ${error}`
       }
     }
   }

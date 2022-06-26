@@ -2,7 +2,7 @@ const API_ENDPOINT = process.env.REACT_APP_BUILD_ENV === 'prod' ?
 	'https://api.verilink.technology' : 'https://dev-api.verilink.technology';
 
 const OPENSEA_MATIC_BASE = "https://opensea.io/assets/matic/";
-const SCANNER_MATIC_BASE = "https://polygonscan.com/tokens-nft?q=";
+const SCANNER_MATIC_BASE = "https://polygonscan.com/tokens-nft1155?q=";
 
 
 export const getNFTMetadataURI = (contractAddress, tokenId) => {

@@ -53,7 +53,7 @@ function parseKeys(payload) {
 }
 
 function parsePublicKey (publicKey) {
-  return ethers.utils.computePublicKey("0x" + publicKey);
+  return ethers.utils.computePublicKey(publicKey);
 }
 
 function parseChipId (publicKey) {
