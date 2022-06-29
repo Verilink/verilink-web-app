@@ -86,7 +86,7 @@ export async function backendPoipMintRequest(email, eventId, blockhash, chipId, 
     console.log(`Post: ${JSON.stringify(post)}`);
     
     const result = await axios.post(getMintRequestURI(), {
-        email, eventId, blockhash, chipId, signature: ethers.utils.hexlify(sig) 
+        email, eventId, blockhash, chipId, signature: ethers.utils.hexlify(sig), test: true
     });
    
     return result.data;
