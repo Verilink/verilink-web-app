@@ -1,6 +1,9 @@
 const API_ENDPOINT = process.env.REACT_APP_BUILD_ENV === 'prod' ?
 	'https://api.verilink.technology' : 'https://dev-api.verilink.technology';
 
+console.log(`API_ENDPOINT: ${API_ENDPOINT}`);
+console.log(`Build Env: ${process.env.REACT_APP_BUILD_ENV}`);
+
 const OPENSEA_MATIC_BASE = "https://opensea.io/assets/matic/";
 const SCANNER_MATIC_BASE = "https://polygonscan.com/tokens-nft1155?q=";
 
