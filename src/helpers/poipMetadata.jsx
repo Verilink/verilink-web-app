@@ -24,8 +24,10 @@ export const fetchPOIPMetadataCentralized = async (eventId) => {
 }
 
 export const fetchPOIPMetadataBlockchain = async (eventId) => {
-	const data = await uri(MATIC_PROVIDER, eventId);
-	return data;
+	const metadataUri = await uri(MATIC_PROVIDER, eventId);
+
+	const result = await axios(metadataUri);
+	return result.data;
 }
 
 export const fetchPOIPMetadata = async (eventId) => {
