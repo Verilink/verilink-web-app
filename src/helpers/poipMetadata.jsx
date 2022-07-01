@@ -3,10 +3,11 @@ import { getPOIPMetadataURI } from '../config/endpoints';
 import { supportIpfsUrl } from './ipfs';
 import axios from 'axios';
 import { POIP_ADDRESS } from '../config/settings';
+import { uri } from '../web3/interfaces/IPOIP/IPOIP';
+import { MATIC_PROVIDER } from '../config/settings';
 
-export const fetchPOIPMetadata = async (eventId) => {
-
-  const internalFetchUrl = getPOIPMetadataURI(POIP_ADDRESS, eventId);
+export const fetchPOIPMetadataCentralized = async (eventId) => {
+	const internalFetchUrl = getPOIPMetadataURI(POIP_ADDRESS, eventId);
   const result = await axios(internalFetchUrl);
 
   const data = result.data;
@@ -14,12 +15,42 @@ export const fetchPOIPMetadata = async (eventId) => {
   if(data.metadata && !data.ipfs_cached)
   { /* handle IPFS metadata */
     const ipfsResult = await axios(supportIpfsUrl(data.metadata));
-    return processPOIPMetadata(ipfsResult);
+    return ipfsResult;
   }
   else
   {
-    return processPOIPMetadata(data);
+    return data;
   }
+}
+
+export const fetchPOIPMetadataBlockchain = async (eventId) => {
+	const data = await uri(MATIC_PROVIDER, eventId);
+	return data;
+}
+
+export const fetchPOIPMetadata = async (eventId) => {
+
+	try 
+	{
+		const metadata = await fetchPOIPMetadataCentralized(eventId);
+		return processPOIPMetadata(metadata);
+	}
+	catch(error)
+	{
+		console.log(`Pulling cached metadata fails: ${eventId}`)
+	}
+
+	try
+	{
+		const metadata = await fetchPOIPMetadataBlockchain(eventId);
+		return processPOIPMetadata(metadata);
+	}
+	catch(error)
+	{
+		console.log(`Pulling blockchain metadata fails: ${eventId}`)
+	}
+  
+	throw `Metadata not found for eventId: ${eventId}`
 }
 
 export const processPOIPMetadata = (metadata) => {
