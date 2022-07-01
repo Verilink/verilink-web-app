@@ -84,12 +84,15 @@ export const processPOIPMetadata = (metadata) => {
 		};
 	}
 
-	return {
+	let ret = {
 		image,
 		animation_url,
 		title: metadata.name,
 		creator: metadata.creator,
     description: metadata.description,
 		eventId: metadata.tokenId
-	}
+	};
+
+	console.log(`Returning: ${JSON.stringify(ret)}`);
+	return ret;
 }

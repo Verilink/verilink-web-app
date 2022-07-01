@@ -124,6 +124,7 @@ const DevicePage = (props) => {
             <Box sx={{ fontStyle: "italic", fontSize: 8}}>(Last 8 alphanumerics only)</Box>
           </Typography>
           <Typography variant="h6" align="center">
+            { /*
             <Box sx={{ fontStyle: "italic", display: "flex", justifyContent: "center",
               color: deviceDetails.verified ? "background.main" : "error.dark" }}>
               { deviceDetails.verified ? "Verified": "Not Verified" }
@@ -135,6 +136,7 @@ const DevicePage = (props) => {
                 { deviceDetails.verified ? <VerifiedIcon/> : <NewReleasesIcon/> }
               </Box>
             </Box>
+                */ }
           </Typography>
           <ConditionalRender condition={deviceDetails.verified == false}>
             <Box sx={{
