@@ -25,17 +25,20 @@ export const fetchPOIPMetadataCentralized = async (eventId) => {
 
 export const fetchPOIPMetadataBlockchain = async (eventId) => {
 	const metadataUri = await uri(MATIC_PROVIDER, eventId);
-
+	console.log(`Metadata URI: ${metadataUri}`);
 	const result = await axios(metadataUri);
+	console.log(`Result: ${result}`);
 	return result.data;
 }
 
 export const fetchPOIPMetadata = async (eventId) => {
-
 	try 
 	{
 		const metadata = await fetchPOIPMetadataCentralized(eventId);
-		return processPOIPMetadata(metadata);
+		if(Object.keys(metadata).length != 0)
+		{	
+			return processPOIPMetadata(metadata);
+		}
 	}
 	catch(error)
 	{
@@ -45,13 +48,16 @@ export const fetchPOIPMetadata = async (eventId) => {
 	try
 	{
 		const metadata = await fetchPOIPMetadataBlockchain(eventId);
-		return processPOIPMetadata(metadata);
+		if(Object.keys(metadata).length != 0)
+		{
+			return processPOIPMetadata(metadata);
+		}
 	}
 	catch(error)
 	{
 		console.log(`Pulling blockchain metadata fails: ${eventId}`)
 	}
-  
+
 	throw `Metadata not found for eventId: ${eventId}`
 }
 
