@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { MATIC_PROVIDER } from "../../config/settings";
+import { isDev, MATIC_PROVIDER } from "../../config/settings";
 
 /* Required Interfaces */
 import { recoverRSV, formatSignature } from "../utils/signature";
@@ -86,7 +86,7 @@ export async function backendPoipMintRequest(email, eventId, blockhash, chipId, 
     console.log(`Post: ${JSON.stringify(post)}`);
     
     const result = await axios.post(getMintRequestURI(), {
-        email, eventId, blockhash, chipId, signature: ethers.utils.hexlify(sig), test: true
+        email, eventId, blockhash, chipId, signature: ethers.utils.hexlify(sig), test: isDev()
     });
    
     return result.data;
