@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import MediaCard from '../components/nft/mediaCard';
 import useWindowDimensions from '../helpers/windowDimensions';
-import { MAX_VIEWPORT_WIDTH, POIP_ADDRESS } from '../config/settings';
+import { MAX_VIEWPORT_WIDTH } from '../config/settings';
 import { Skeleton, Typography } from '@mui/material';
 import poipStore from '../stores/poipStore';
 import EventStatus from '../components/event/EventStatus';
@@ -23,6 +23,7 @@ import MuiAlert from '@mui/material/Alert';
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
 import ConditionalRender from '../components/hoc/ConditionalRender';
+import { getPOIPAddress } from '../config/endpoints';
 
 const centerFlex = {
   display: "flex",
@@ -199,10 +200,10 @@ const PoipPage = (props) => {
         </Box>
         <Box>
           <Box sx={{ ...centerFlex, marginTop: 2}}>
-            <PolygonScanButton contractAddress={POIP_ADDRESS} tokenId={details.eventId}/>
+            <PolygonScanButton contractAddress={getPOIPAddress()} tokenId={details.eventId}/>
           </Box>
           <Box sx={{ ...centerFlex, marginTop: 2 }}>
-            <OpenseaButton contractAddress={POIP_ADDRESS} tokenId={details.eventId}/>
+            <OpenseaButton contractAddress={getPOIPAddress()} tokenId={details.eventId}/>
           </Box>
         </Box>
         <Box style={{ marginTop: 15, }}>       

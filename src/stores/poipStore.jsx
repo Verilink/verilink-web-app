@@ -18,8 +18,7 @@ import {
  } from '../web3/interfaces/IPOIP/IPOIP';
 import deviceStore from './deviceStore';
 import { ethers } from 'ethers';
-
-const contractAddress = process.env.OFFICIAL_POIP_ADDRESS;
+import { getPOIPAddress } from '../config/endpoints';
 
 const safeBigNumber = (bn, maxBits=-1) => {
   try
@@ -119,7 +118,7 @@ const poipStore = create((set) => ({
       set({
         loading: false,
         metadata: null,
-        error: `We couldn't load the POIP with contract address: ${contractAddress}, eventId: ${eventId}`
+        error: `We couldn't load the POIP with contract address: ${getPOIPAddress()}, eventId: ${eventId}`
       });
       throw `Error Loading POIP: ${error}`
     }

@@ -5,6 +5,7 @@ import TokenStatus from '../components/event/TokenStatus';
 import OpenseaButton from '../components/buttons/openseaButton';
 import PolygonScanButton from '../components/buttons/polygonScanButton';
 import VerifyCreator from '../components/event/VerifyCreator';
+import ClaimModal from '../components/modals/claimModal';
 
 const TestPage = () => {
 
@@ -17,21 +18,13 @@ const TestPage = () => {
   const tokenLimit = 100;
   const tokensMinted = 69;
 
+  console.log(`Page Path: ${window.location.pathname}`);
+  
   return (
     <div>
-    <div style={{ marginTop: 5,
-      width: "100%",
-      height: 200,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      borderStyle: "1px solid black"
-    }}>
-      <VerifyCreator 
-        address={"0xdd98001c33c0c75d0952439699c33b1a02cf23a9"}
-        creator={"verilink"}
+      <ClaimModal
+        open={true}
       />
-    </div>
     </div>
   );
 

@@ -2,12 +2,12 @@ import React from 'react';
 import { getPOIPMetadataURI } from '../config/endpoints';
 import { supportIpfsUrl, isIPFS} from './ipfs';
 import axios from 'axios';
-import { POIP_ADDRESS } from '../config/settings';
+import { getPOIPAddress } from '../config/endpoints';
 import { uri } from '../web3/interfaces/IPOIP/IPOIP';
 import { MATIC_PROVIDER } from '../config/settings';
 
 export const fetchPOIPMetadataCentralized = async (eventId) => {
-	const internalFetchUrl = getPOIPMetadataURI(POIP_ADDRESS, eventId);
+	const internalFetchUrl = getPOIPMetadataURI(getPOIPAddress(), eventId);
   const result = await axios(internalFetchUrl);
 
   const data = result.data;

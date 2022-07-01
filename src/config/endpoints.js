@@ -1,3 +1,5 @@
+import { MAIN_POIP_ADDRESS, TEST_POIP_ADDRESS } from "./settings";
+
 const API_ENDPOINT = process.env.REACT_APP_BUILD_ENV === 'prod' ?
 	'https://api.verilink.technology' : 'https://dev-api.verilink.technology';
 
@@ -7,6 +9,12 @@ console.log(`Build Env: ${process.env.REACT_APP_BUILD_ENV}`);
 const OPENSEA_MATIC_BASE = "https://opensea.io/assets/matic/";
 const SCANNER_MATIC_BASE = "https://polygonscan.com/tokens-nft1155?q=";
 
+
+export const VERILINK_APP_URI = "https://apps.apple.com/us/app/verilink/id1582507741";
+
+export const getPOIPAddress = () => {
+	return MAIN_POIP_ADDRESS;
+}
 
 export const getNFTMetadataURI = (contractAddress, tokenId) => {
 	return `${API_ENDPOINT}/nft/contract/${contractAddress}/token/${tokenId}`;
