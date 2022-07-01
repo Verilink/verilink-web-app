@@ -1,6 +1,6 @@
 import React from 'react';
 import { getPOIPMetadataURI } from '../config/endpoints';
-import { supportIpfsUrl } from './ipfs';
+import { supportIpfsUrl, isIPFS} from './ipfs';
 import axios from 'axios';
 import { POIP_ADDRESS } from '../config/settings';
 import { uri } from '../web3/interfaces/IPOIP/IPOIP';
@@ -66,8 +66,8 @@ export const processPOIPMetadata = (metadata) => {
 	
 	console.log(`Processing metadata: ${JSON.stringify(metadata)}`);
 
-	let image = null;
-	if(metadata.image)
+	let image = metadata.image;
+	if(isIPFS(image))
 	{
 		image = {
 			type: "image",
@@ -75,8 +75,8 @@ export const processPOIPMetadata = (metadata) => {
 		};
 	}
 
-	let animation_url = null;
-	if(metadata.animation_url)
+	let animation_url = metadata.animation_url;
+	if(isIPFS(animation_url))
 	{
 		animation_url = {
 			type: "video",
