@@ -2,11 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { isDev } from './config/settings';
 
 /* elements */
 import Root from './components/elements/root';
 import Header from './components/elements/header';
 import Footer from './components/elements/footer';
+import DevHeader from './components/elements/devHeader';
 
 import theme from "./styles/theme";
 
@@ -19,6 +21,7 @@ import TagNFTPage from './pages/tagNFTPage';
 import PoipPage from './pages/poipPage';
 import DevicePage from './pages/devicePage';
 import TestPage from './pages/testPage';
+
 
 const PageElement = ({name}) => {
   return (<div style={{ height: 50 }}>{name}</div>);
@@ -33,7 +36,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <Root id='app-root'>
         <BrowserRouter>
-          <Header/>
+          { isDev() ? <DevHeader/> : <Header/>}
           <Routes>
             <Route index path={routes.home} element={<TagScanPage/>}/>
             <Route path={routes.scan} element={<TagScanPage/>}/>
