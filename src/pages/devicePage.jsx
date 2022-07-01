@@ -68,11 +68,11 @@ const DevicePage = (props) => {
   }
 
   const goToPOIP = (replace=false) => {
-    navigate(routes.poip, replace);
+    navigate("../" + routes.poip, replace);
   }
 
   const goToNFT = (replace=false) => {
-    navigate(routes.nft, replace);
+    navigate("../" + routes.nft, replace);
   }
 
   React.useEffect(() => {
@@ -80,7 +80,7 @@ const DevicePage = (props) => {
     /* quick fix to jump to POIP - remove later */
     if(deviceDetails.poipEventId != null)
     {
-      goToPOIP();
+      goToPOIP(true);
     }
 
     if(onlyNFT())
