@@ -75,9 +75,9 @@ const ClaimModal = (props) => {
             <img src={Logo} style={{ width: 24, height: 24, }}/>
           </Box>
           <Typography align="left" paragraph gutterBottom>
-            Claim the token into a Verilink custodial wallet. To claim directly into a wallet, download the Verilink App. 
+            To claim ownership, download the app. Until you're ready, we're happy to hold onto this for you! 
           </Typography>
-          <Typography gutterBottom>Enter an email for the custodial wallet</Typography>
+          <Typography align="center" gutterBottom>Enter an email to hold the token</Typography>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
             <TextField
               label="email"
@@ -86,7 +86,7 @@ const ClaimModal = (props) => {
               style={{ width: "80%" }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 2}}>
+          <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: 2, marginBottom: 2}}>
             <Button
               disabled={!validEmail(email)}
               variant="contained"
@@ -94,7 +94,12 @@ const ClaimModal = (props) => {
             >
               Scan to claim
             </Button>
-          </Box></>)
+          </Box>
+          <Typography style={{ fontSize: 10 }}>
+            {`Disclaimer: By claiming, you're acknowledging that Verilink will not be held responsible or liable 
+            for any issues that may arise during token claiming or token storage. We promise we'll do our best :)`}
+          </Typography>
+          </>)
         }
         </Container>
       </Box>
