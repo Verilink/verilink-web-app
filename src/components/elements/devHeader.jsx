@@ -37,7 +37,7 @@ const DevHeader = (props) => {
         <AppBar position="static">
           <Toolbar style={{ ...toolBarStyle, ...toolBarTheme }}>
               <LogoButton onClick={onClick}/>
-              <Typography align="center" style={{ color: "red"}}>Developer Mode</Typography>
+              <Typography align="center" style={{ color: "red", fontWeight: 800 }}>DEV</Typography>
               <AppStoreButton/>
           </Toolbar>
         </AppBar>
