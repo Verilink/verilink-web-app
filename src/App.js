@@ -24,6 +24,10 @@ const PageElement = ({name}) => {
   return (<div style={{ height: 50 }}>{name}</div>);
 }
 
+const DevWelcome = () => {
+  return (<div>Welcome to the dev page</div>)
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -31,12 +35,19 @@ function App() {
         <BrowserRouter>
           <Header/>
           <Routes>
-            <Route path={routes.home} element={<TagScanPage/>}/>
+            <Route index path={routes.home} element={<TagScanPage/>}/>
             <Route path={routes.scan} element={<TagScanPage/>}/>
             <Route path={routes.device} element={<DevicePage/>}/>
             <Route path={routes.nft} element={<TagNFTPage/>}/>
             <Route path={routes.poip} element={<PoipPage/>}/>
             <Route path={routes.test} element={<TestPage/>}/>
+            <Route path={routes.dev}> { /* dev */ }
+              <Route index element={<TagScanPage/>}/>
+              <Route path={routes.device} element={<DevicePage/>}/>
+              <Route path={routes.nft} element={<TagNFTPage/>}/>
+              <Route path={routes.poip} element={<PoipPage/>}/>
+              <Route path={routes.test} element={<TestPage/>}/>
+            </Route>
           </Routes>
           <Footer/>
         </BrowserRouter>

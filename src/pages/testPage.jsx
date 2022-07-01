@@ -6,6 +6,7 @@ import OpenseaButton from '../components/buttons/openseaButton';
 import PolygonScanButton from '../components/buttons/polygonScanButton';
 import VerifyCreator from '../components/event/VerifyCreator';
 import ClaimModal from '../components/modals/claimModal';
+import { isDev } from '../config/settings';
 
 const TestPage = () => {
 
@@ -19,7 +20,8 @@ const TestPage = () => {
   const tokensMinted = 69;
 
   console.log(`Page Path: ${window.location.pathname}`);
-  
+  console.log(`IsDev: ${isDev()}`);
+
   return (
     <div>
       <ClaimModal

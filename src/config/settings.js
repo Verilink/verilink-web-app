@@ -8,6 +8,11 @@ const USE_TESTNET = false;
 export const MATIC_RPC_URL = USE_TESTNET ? "https://rpc-mumbai.maticvigil.com" : 'https://polygon-rpc.com';
 export const MATIC_PROVIDER = new ethers.providers.JsonRpcProvider(MATIC_RPC_URL);
 
+export const isDev = () => {
+  let paths = window.location.pathname.split("/").filter((val) => val != "");
+  return paths[0] === "dev";
+}
+
 export const ETHER_PROVIDER = USE_TESTNET ? 
   (new ethers.providers.InfuraProvider("ropsten" , process.env.REACT_APP_INFURA_PROJECT_ID)) :
   (new ethers.providers.InfuraProvider("homestead" , process.env.REACT_APP_INFURA_PROJECT_ID))
