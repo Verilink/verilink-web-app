@@ -21,6 +21,7 @@ import TagNFTPage from './pages/tagNFTPage';
 import PoipPage from './pages/poipPage';
 import DevicePage from './pages/devicePage';
 import TestPage from './pages/testPage';
+import React from 'react';
 
 
 const PageElement = ({name}) => {
@@ -32,6 +33,8 @@ const DevWelcome = () => {
 }
 
 function App() {
+
+  React.useEffect(() => {}, [isDev()])
   return (
     <ThemeProvider theme={theme}>
       <Root id='app-root'>
