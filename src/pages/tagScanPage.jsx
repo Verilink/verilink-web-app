@@ -14,6 +14,7 @@ import VerilinkTag from "../VTag.png";
 
 import useWindowDimensions from '../helpers/windowDimensions';
 import { MAX_VIEWPORT_WIDTH } from '../config/settings';
+import useSearchParams from '../hooks/useSearchParams';
 
 import deviceStore from '../stores/deviceStore';
 import nftStore from '../stores/nftStore';
@@ -27,23 +28,33 @@ const TagScanPage = (props) => {
   const navigate = useNavigate();
 
   const windowDimensions = useWindowDimensions();
-
-  const [log, addLog, clearLog] = useAppendLog();
+  const searchParams = useSearchParams();
 
   /* reset device, nft, poip on tag scan page */
   React.useEffect(() => { 
-    const { reset: resetDeviceStore } = deviceStore.getState();
+    const { reset: resetDeviceStore, init: deviceInit } = deviceStore.getState();
     const { reset: resetNFTStore } = nftStore.getState();
     const { reset: resetPOIPStore } = poipStore.getState();
     resetDeviceStore();
     resetNFTStore();
     resetPOIPStore();
-  }, []);
+
+    if(searchParams.get("static"))
+    {
+      deviceInit(searchParams.get("static"));
+      const { chipId } = deviceStore.getState();
+      if(chipId)
+      {
+        loadDevice();
+        navigate(routes.device)
+      }
+    }
+  }, [searchParams]);
 
   const onScan = async () => {
     try
     { 
-      await linkHalo(addLog);
+      await linkHalo();
     }
     catch(error)
     {

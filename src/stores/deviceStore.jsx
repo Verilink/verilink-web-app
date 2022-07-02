@@ -31,17 +31,9 @@ const deviceStore = create((set) => ({
   poipEventId: null,
   verified: false,
 
-  keyLoad: () => {
-    const { updateFromKeys } = deviceStore.getState();
-    const url = URL(window.location.href, true);
-    console.log(`URL: ${JSON.stringify(url.query.static)}`);
-    //const keys = { primaryPublicKeyRaw: url.}
-  },
-
-  init: () => {
+  init: (data) => {
     const { updateFromKeys } = deviceStore.getState()
-    const url = URL(window.location.href, true);
-    const keys = parseKeys(url.query.static);
+    const keys = parseKeys(data);
     
     if(keys)
     {
@@ -102,7 +94,7 @@ const deviceStore = create((set) => ({
     }
   },
 
-  linkHalo: async (addLog) => {
+  linkHalo: async () => {
     const { triggerScan, updateFromKeys } = deviceStore.getState()
 
     const sig = await triggerScan('02')
@@ -113,26 +105,22 @@ const deviceStore = create((set) => ({
       
       if(keys)
       {
-        addLog("Updating Keys");
-        updateFromKeys(keys, addLog);
+        updateFromKeys(keys);
       }
     }
   },
 
-  verifyHalo: async (addLog) => {
+  verifyHalo: async () => {
     const { triggerScan, updateFromKeys } = deviceStore.getState();
 
     const block = await MATIC_PROVIDER.getBlock();
 
     const sigMsg = block.hash;
     const sigCmd = generateCmd(1, 1, sigMsg)
-    console.log(`SigCmd: ${JSON.stringify(sigCmd)}`)
     const sig = await triggerScan(sigCmd)
     const sigString = hexStringFromUint8(sig)
 
-    addLog(`SigString: ${JSON.stringify(sigString)}`);
     const pk = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(sigMsg), "0x" + sigString);
-    addLog(`PK: ${JSON.stringify(pk)}`);
 
     updateFromKeys({ primaryPublicKeyRaw: pk })
   },
