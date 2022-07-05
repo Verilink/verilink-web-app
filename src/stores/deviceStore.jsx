@@ -139,7 +139,7 @@ const deviceStore = create((set) => ({
       const result = await axios(internalFetchUrl);
       const data = result.data;
       console.log(`Data: ${JSON.stringify(data)}`);
-
+      /*
       const { init: poipInit } = poipStore.getState();
       const { init: nftInit } = nftStore.getState();
 
@@ -152,6 +152,7 @@ const deviceStore = create((set) => ({
       {
         nftInit(data.contractAddress, parseInt(data.tokenId));
       }
+      */
       
       set({ 
         contractAddress: data.contractAddress,

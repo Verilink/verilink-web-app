@@ -1,8 +1,8 @@
 const routes = {
   home: "/",
   scan: "scan",
-  nft: "nft",
-  poip: "poip",
+  nft: "nft/:contractAddress/:tokenId",
+  poip: "poip/:eventId",
   device: "device",
   dev: "/dev",
   test: "test"

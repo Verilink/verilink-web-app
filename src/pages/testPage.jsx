@@ -7,29 +7,47 @@ import PolygonScanButton from '../components/buttons/polygonScanButton';
 import VerifyCreator from '../components/event/VerifyCreator';
 import ClaimModal from '../components/modals/claimModal';
 import { isDev } from '../config/settings';
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
 
 const TestPage = () => {
 
-  var startTime = new Date();
-  startTime = startTime.setTime(startTime.getTime() - 60*1000);
+  const [value, setValue] = React.useState('Default Controlled');
 
-  var finishTime = new Date();
-  finishTime = finishTime.setTime(finishTime.getTime() + 24*60*60*1000);
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
 
-  const tokenLimit = 100;
-  const tokensMinted = 69;
-
-  console.log(`Page Path: ${window.location.pathname}`);
-  console.log(`IsDev: ${isDev()}`);
+  React.useEffect(() => {
+    console.log(`Value: ${JSON.stringify(value)}`);
+  }, [value])
 
   return (
-    <div>
-      <ClaimModal
-        open={true}
-      />
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}>
+      <Box sx={{
+        marginTop: 20,
+      }}>
+       
+      </Box>
     </div>
   );
 
 }
 
 export default TestPage;
+
+/*
+  <TextField
+    id="outlined-multiline-flexible"
+    label="Multiline"
+    multiline
+    maxRows={4}
+    defaultValue="hello world"
+    value={value}
+    onChange={handleChange}
+  />
+*/

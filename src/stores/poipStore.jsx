@@ -55,7 +55,6 @@ const poipStore = create((set) => ({
   transactionHash: null,
 
   init: (poipEventId) => {
-    console.log(`Poip Intialized!: ${poipEventId}`)
     set({ eventId: poipEventId });
   },
 

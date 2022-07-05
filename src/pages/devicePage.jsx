@@ -68,11 +68,14 @@ const DevicePage = (props) => {
   }
 
   const goToPOIP = (replace=false) => {
-    navigate("../" + routes.poip, replace);
+    navigate("../" + routes.poip.replace(":eventId", deviceDetails.poipEventId), replace);
   }
 
   const goToNFT = (replace=false) => {
-    navigate("../" + routes.nft, replace);
+    navigate("../" + 
+      routes.nft
+        .replace(":contractAddress", deviceDetails.contractAddress)
+        .replace(":tokenId", deviceDetails.tokenId), replace);
   }
 
   React.useEffect(() => {

@@ -19,7 +19,7 @@ import VerifyCreator from '../components/event/VerifyCreator';
 import ClaimModal from '../components/modals/claimModal';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
+import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
 import ConditionalRender from '../components/hoc/ConditionalRender';
@@ -83,6 +83,8 @@ const PoipPage = (props) => {
   const [poipClaimSuccess, setPoipClaimSuccess] = React.useState(false);
   const onHandleSuccessClose = () => { setPoipClaimSuccess(false); }
 
+  const { eventId } = useParams();
+
   const pollTokensMinted = poipStore((s) => s.pollTokensMinted);
   const isClaimable = poipStore((s) => s.isClaimable);
   const mintPOIP = poipStore((s) => s.mintPOIP);
@@ -132,7 +134,10 @@ const PoipPage = (props) => {
   React.useEffect(() => {
 
     (async () => {
-      const { loadPOIP } = poipStore.getState();
+
+      const { init, loadPOIP } = poipStore.getState();
+      init(parseInt(eventId));
+
       try
       {
         await loadPOIP();
@@ -144,7 +149,7 @@ const PoipPage = (props) => {
         console.log("Load Error:", poipError)
       }
     })()
-  }, []);
+  }, [eventId]);
 
   return (
     <Box sx={{
