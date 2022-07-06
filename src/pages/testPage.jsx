@@ -9,6 +9,12 @@ import ClaimModal from '../components/modals/claimModal';
 import { isDev } from '../config/settings';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+
+} from "react-share";
+import ShareButton from '../components/buttons/shareButton';
 
 const TestPage = () => {
 
@@ -31,7 +37,7 @@ const TestPage = () => {
       <Box sx={{
         marginTop: 20,
       }}>
-       
+        <ShareButton/>
       </Box>
     </div>
   );

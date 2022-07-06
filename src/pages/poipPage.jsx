@@ -24,6 +24,7 @@ import ReactMarkdown from 'react-markdown';
 import logo from "../logo.png";
 import ConditionalRender from '../components/hoc/ConditionalRender';
 import { getPOIPAddress } from '../config/endpoints';
+import ShareButton from '../components/buttons/shareButton';
 
 const centerFlex = {
   display: "flex",
@@ -184,7 +185,14 @@ const PoipPage = (props) => {
         <EventStatus 
           startTime={details.startTime} 
           finishTime={details.finishTime}/>
-       
+        <Box sx={{
+          display: "flex",
+          justifyContent: "center"
+        }}>
+        <ShareButton 
+          name={details.metadata.title}
+          creator={details.metadata.creator}/>
+        </Box>
         <ConditionalRender condition={isClaimable()}>
           <Box sx={{ ...centerFlex, marginTop: 1, marginBottom: 3 }}>
             <Button variant="contained" color="primary"
