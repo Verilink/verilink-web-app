@@ -13,7 +13,7 @@ import axios from 'axios';
 import { MATIC_PROVIDER } from '../config/settings';
 import generateCmd from '../helpers/generateCMD';
 import { ethers } from 'ethers';
-
+import { recoverRSV, formatSignature } from '../web3/utils/signature';
 import nftStore from './nftStore';
 import poipStore from './poipStore';
 
@@ -30,6 +30,7 @@ const deviceStore = create((set) => ({
   tokenId: null,
   poipEventId: null,
   verified: false,
+  fake: false,
 
   init: (data) => {
     const { updateFromKeys } = deviceStore.getState()
@@ -111,18 +112,35 @@ const deviceStore = create((set) => ({
   },
 
   verifyHalo: async () => {
-    const { triggerScan, updateFromKeys } = deviceStore.getState();
+    const { triggerScan, publicKey, chipId } = deviceStore.getState();
 
     const block = await MATIC_PROVIDER.getBlock();
 
     const sigMsg = block.hash;
-    const sigCmd = generateCmd(1, 1, sigMsg)
-    const sig = await triggerScan(sigCmd)
-    const sigString = hexStringFromUint8(sig)
+    const sigCmd = generateCmd(1, 1, sigMsg, false);
+    const sig = await triggerScan(sigCmd);
+    const sigString = hexStringFromUint8(sig);
+    const { r, s, v } = recoverRSV(sigMsg, sigString, chipId);
+    let formattedSig = formatSignature(r, s, v);
 
-    const pk = ethers.utils.recoverPublicKey(ethers.utils.hashMessage(sigMsg), "0x" + sigString);
+    const pk = ethers.utils.recoverPublicKey(sigMsg, formattedSig);
+    console.log(`Pk: ${pk}`);
+    console.log(`Public: ${publicKey}`);
 
-    updateFromKeys({ primaryPublicKeyRaw: pk })
+    if(pk === publicKey)
+    {
+      set({ 
+        verified: true
+      });
+      return true;
+    }
+    else
+    {
+      set({
+        fake: true
+      });
+      return false;
+    }
   },
 
   loadDevice: async () => {
@@ -138,21 +156,6 @@ const deviceStore = create((set) => ({
     {
       const result = await axios(internalFetchUrl);
       const data = result.data;
-      console.log(`Data: ${JSON.stringify(data)}`);
-      /*
-      const { init: poipInit } = poipStore.getState();
-      const { init: nftInit } = nftStore.getState();
-
-      if(data.poipEventId != null && data.poipEventId != -1)
-      {
-        poipInit(parseInt(data.poipEventId));
-      }
-
-      if(data.contractAddress && data.tokenId)
-      {
-        nftInit(data.contractAddress, parseInt(data.tokenId));
-      }
-      */
       
       set({ 
         contractAddress: data.contractAddress,

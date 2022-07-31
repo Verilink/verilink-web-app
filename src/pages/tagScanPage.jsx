@@ -2,8 +2,6 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 
 import { useNavigate } from "react-router-dom";
 import routes from '../config/routes';
@@ -15,6 +13,7 @@ import VerilinkTag from "../VTag.png";
 import useWindowDimensions from '../helpers/windowDimensions';
 import { MAX_VIEWPORT_WIDTH } from '../config/settings';
 import useSearchParams from '../hooks/useSearchParams';
+import { useStatusSnackbar, StatusSnackbar } from '../components/modals/statusSnackbar';
 
 import deviceStore from '../stores/deviceStore';
 import nftStore from '../stores/nftStore';
@@ -24,7 +23,12 @@ import useAppendLog from '../helpers/useAppendLog';
 const TagScanPage = (props) => {
   const linkHalo = deviceStore((s) => s.linkHalo);
   const loadDevice = deviceStore((s) => s.loadDevice);
-  const [errorMsg, setErrorMsg] = React.useState({ isSet: false, message: "" });
+  
+  const {
+    status: errorStatus,
+    setMessage: setError
+  } = useStatusSnackbar("error");
+
   const navigate = useNavigate();
 
   const windowDimensions = useWindowDimensions();
@@ -59,7 +63,7 @@ const TagScanPage = (props) => {
     catch(error)
     {
       console.log(`Error: Scan Failed: ${error}`);
-      setErrorMsg({ isSet: true, message: "Scan failed!"});
+      setError("Scan Failed!");
       return;
     }
 
@@ -67,7 +71,7 @@ const TagScanPage = (props) => {
     const { chipId } = deviceStore.getState();
     if(!chipId)
     {
-      setErrorMsg({ isSet: true, message: "Unrecognized Device!"});
+      setError("Unrecognized Device!");
       return;
     }
     else
@@ -75,10 +79,6 @@ const TagScanPage = (props) => {
       loadDevice();
       navigate(routes.device)
     }
-  }
-
-  const handleClose = () => {
-    setErrorMsg({ isSet: false, message: "" });
   }
 
   return (
@@ -115,11 +115,7 @@ const TagScanPage = (props) => {
           <ScanButton onClick={onScan}/>
         </Box>
       </BoundingBox>
-      <Snackbar open={errorMsg.isSet} autoHideDuration={6000} onClose={handleClose}>
-        <MuiAlert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-          {errorMsg.message}
-        </MuiAlert>
-      </Snackbar>
+      <StatusSnackbar {...errorStatus}/>
     </Container>
   );
 };

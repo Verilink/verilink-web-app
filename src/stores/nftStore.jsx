@@ -38,6 +38,8 @@ const nftStore = create((set) => ({
     try 
     {
       const result = await fetchNFTMetadata(contractAddress, tokenId);
+      console.log(`Result: ${JSON.stringify(result)}`);
+      
       set({
         loading: false,
         metadata: result,

@@ -2,8 +2,6 @@ import React from 'react';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import ConditionalRender from '../components/hoc/ConditionalRender';
 import { useNavigate } from "react-router-dom";
@@ -11,6 +9,7 @@ import routes from '../config/routes';
 
 import useWindowDimensions from '../helpers/windowDimensions';
 import { MAX_VIEWPORT_WIDTH } from '../config/settings';
+import { useStatusSnackbar, StatusSnackbar } from '../components/modals/statusSnackbar';
 
 import BoundingBox from '../components/containers/boundingBox';
 import VerifyButton from '../components/buttons/verifyButton';
@@ -54,8 +53,11 @@ const DevicePage = (props) => {
     contractAddress: s.contractAddress,
     tokenId: s.tokenId,
     poipEventId: s.poipEventId,
-    verified: s.verified
+    verified: s.verified,
+    fake: s.fake
   }));
+
+  const verifyHalo = deviceStore((s) => s.verifyHalo);
 
   const onlyNFT = () => {
     return (deviceDetails.contractAddress != null && deviceDetails.tokenId != null) &&
@@ -78,13 +80,37 @@ const DevicePage = (props) => {
         .replace(":tokenId", deviceDetails.tokenId), replace);
   }
 
-  React.useEffect(() => {
+  const {
+    status: errorStatus,
+    setMessage: setError
+  }= useStatusSnackbar("error");
 
-    /* quick fix to jump to POIP - remove later */
-    if(deviceDetails.poipEventId != null)
+  const {
+    status: successStatus,
+    setMessage: setSuccess
+  } = useStatusSnackbar("success");
+
+  const onScan = async () => {
+    try
     {
-      goToPOIP(true);
+      const verified = await verifyHalo();
+      if(!verified)
+      {
+        setError("Verification Failed! Possibly Fake!");
+      }
+      else
+      {
+        setSuccess("Verified!");
+      }
     }
+    catch(error)
+    {
+      console.log(`Error: Scan Failed: ${error}`);
+      setError("Scan Failed!");
+    }
+  }
+
+  React.useEffect(() => {
 
     if(onlyNFT())
     {
@@ -99,9 +125,6 @@ const DevicePage = (props) => {
   const windowDimensions = useWindowDimensions();
 
   console.log(`Device Details: ${JSON.stringify(deviceDetails)}`);
-
-  const handleClose = () => {}
-  const onScan = () => {}
 
   return (
     <Container style={{ 
@@ -127,10 +150,10 @@ const DevicePage = (props) => {
             <Box sx={{ fontStyle: "italic", fontSize: 8}}>(Last 8 alphanumerics only)</Box>
           </Typography>
           <Typography variant="h6" align="center">
-            { /*
+            {
             <Box sx={{ fontStyle: "italic", display: "flex", justifyContent: "center",
-              color: deviceDetails.verified ? "background.main" : "error.dark" }}>
-              { deviceDetails.verified ? "Verified": "Not Verified" }
+              color: deviceDetails.verified ? "success.main" : "error.dark", marginTop: 1 }}>
+              <Typography>{ deviceDetails.fake ? "Fake": (deviceDetails.verified ? "Verified": "Unverified") }</Typography>
               <Box sx={{ marginLeft: 1, 
                   display: "flex", 
                   justifyContent: "center",
@@ -139,7 +162,7 @@ const DevicePage = (props) => {
                 { deviceDetails.verified ? <VerifiedIcon/> : <NewReleasesIcon/> }
               </Box>
             </Box>
-                */ }
+            }
           </Typography>
           <ConditionalRender condition={deviceDetails.verified == false}>
             <Box sx={{
@@ -175,10 +198,8 @@ const DevicePage = (props) => {
           </Typography>
         </Box>
       </BoundingBox>
-      <Snackbar open={false} autoHideDuration={6000} onClose={handleClose}>
-        <MuiAlert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-        </MuiAlert>
-      </Snackbar>
+      <StatusSnackbar {...errorStatus}/>
+      <StatusSnackbar {...successStatus}/>
     </Container>
   );
 }

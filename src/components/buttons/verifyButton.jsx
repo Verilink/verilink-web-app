@@ -9,7 +9,7 @@ const VerifyButton = (props) => {
   return (
     <Button color="background" variant="contained"
       onClick={props.onClick} style={scanButtonStyle}
-      >Verify Device</Button>
+      >Authenticate</Button>
   );
 };
 

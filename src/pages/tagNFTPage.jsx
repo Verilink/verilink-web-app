@@ -33,6 +33,7 @@ const TagNFTPage = (props) => {
   const mediaSize = Math.min(windowDimensions.width - 20, MAX_VIEWPORT_WIDTH - 40);
 
   console.log(`MediaSize: ${mediaSize}`)
+  console.log(`Metadata: ${JSON.stringify(metadata)}`);
   return (
     <Box sx={{ 
       marginTop: 0, 
