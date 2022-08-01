@@ -60,7 +60,7 @@ const TagNFTPage = (props) => {
         <Typography gutterBottom align="center" variant="h6">
           <Box sx={{ fontStyle: 'italic', }}>{creator}</Box>
         </Typography>
-        <Typography paragraph>
+        <Typography paragraph component="div">
           <ReactMarkdown children={description} className="line-break" />
         </Typography>
         <Box

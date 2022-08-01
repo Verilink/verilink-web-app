@@ -18,7 +18,6 @@ import { useStatusSnackbar, StatusSnackbar } from '../components/modals/statusSn
 import deviceStore from '../stores/deviceStore';
 import nftStore from '../stores/nftStore';
 import poipStore from '../stores/poipStore';
-import useAppendLog from '../helpers/useAppendLog';
 
 const TagScanPage = (props) => {
   const linkHalo = deviceStore((s) => s.linkHalo);

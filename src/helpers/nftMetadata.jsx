@@ -4,10 +4,11 @@ import { supportIpfsUrl } from "./ipfs";
 import axios from 'axios';
 
 export const fetchNFTMetadata = async (contractAddress, tokenId) => {
+	console.log(`Fetching metadata: contract ${contractAddress}, token: ${tokenId.toString()}`);
+	
 	const internalFetchUrl = getNFTMetadataURI(contractAddress, tokenId);
 	const result = await axios(internalFetchUrl);
 	const data = result.data;
-
 	if(data.metadata)
 	{ /* handle IPFS metadata */
 		const ipfsResult = await axios(supportIpfsUrl(data.metadata));

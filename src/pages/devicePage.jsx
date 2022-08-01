@@ -57,16 +57,25 @@ const DevicePage = (props) => {
     fake: s.fake
   }));
 
+  const loadPOIP = poipStore((s) => s.loadPOIP);
+  const loadNFT = nftStore((s) =>  s.loadNFT);
+
   const verifyHalo = deviceStore((s) => s.verifyHalo);
 
+  const isNFT = () => {
+    return (deviceDetails.contractAddress != null && deviceDetails.tokenId != null);
+  }
+
+  const isPOIP = () => {
+    return (deviceDetails.poipEventId != null);
+  }
+
   const onlyNFT = () => {
-    return (deviceDetails.contractAddress != null && deviceDetails.tokenId != null) &&
-      (deviceDetails.poipEventId == null);
+    return isNFT(deviceDetails) && !isPOIP(deviceDetails);
   }
 
   const onlyPOIP = () => {
-    return (deviceDetails.contractAddress == null && deviceDetails.tokenId == null) &&
-      (deviceDetails.poipEventId != null);
+    return !isNFT(deviceDetails) && isPOIP(deviceDetails);
   }
 
   const goToPOIP = (replace=false) => {
@@ -110,7 +119,10 @@ const DevicePage = (props) => {
     }
   }
 
-  React.useEffect(() => {
+  React.useEffect(() => { 
+    if(isNFT()) loadNFT(deviceDetails.contractAddress, deviceDetails.tokenId);
+
+    if(isPOIP()) loadPOIP(deviceDetails.poipEventId);
 
     if(onlyNFT())
     {
