@@ -32,8 +32,9 @@ const nftStore = create((set) => ({
     });
   },
 
-  loadNFT: async (contractAddress, tokenId) => {
+  loadNFT: async () => {
     set({ loading: true, error: '', metadata: null });
+    const { contractAddress, tokenId } = nftStore.getState();
 
     try 
     {
