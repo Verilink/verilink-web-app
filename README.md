@@ -1,10 +1,10 @@
-# Getting Started with Create React App
+# Verilink Web App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The Verilink Web App is a way to interact with our blockchain NFC chips without downloading the app. 
+When tapping the tag with NFC, the ndef layer will pull up this web app. From the web app, you can verify the blockchain device,
+discover the services associated with the blockchain device, and perform interactions like minting a POIP to your email.
 
-## Available Scripts
-
-In the project directory, you can run:
+The Web App leverages the Yubikey interface to communicate over NFC through a web browser. 
 
 ### `npm start`
 
